@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ders Takip · Murat Günaydın</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f2ede2;
+  --paper-2:#e9e1d1;
+  --ink:#211f1c;
+  --ink-soft:#5b564c;
+  --line:#d8cdb6;
+  --gs:#a8412c;      /* Görsel Sanatlar - kiremit */
+  --gs-soft:#f1ddd4;
+  --ds:#1f6f6b;      /* Dijital Sanatlar - çam yeşili/teal */
+  --ds-soft:#dcece9;
+  --dm:#6b5a8e;       /* Dijital ve Müzik - mor */
+  --dm-soft:#e6e0ef;
+  --gold:#b98a2e;
+  --radius:14px;
+  --shadow:0 2px 10px rgba(33,31,28,.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:90px;
+  min-height:100vh;
+  background-image:
+    radial-gradient(circle at 20% 8%, rgba(168,65,44,.05), transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(31,111,107,.05), transparent 40%);
+}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px;}
+
+/* HEADER */
+header.top{
+  padding:22px 16px 16px;
+  max-width:520px;margin:0 auto;
+}
+.top .brand{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+.top h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:26px;
+  margin:0;
+  letter-spacing:-.01em;
+}
+.top .who{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-top:2px;
+}
+.clockbox{
+  text-align:right;
+  font-family:'IBM Plex Mono',monospace;
+}
+.clockbox .time{font-size:20px;font-weight:500;}
+.clockbox .date{font-size:11.5px;color:var(--ink-soft);margin-top:1px;}
+
+/* TABS */
+.tabs{
+  display:flex;gap:6px;
+  max-width:520px;margin:0 auto 14px;
+  padding:0 16px;
+}
+.tab{
+  flex:1;
+  text-align:center;
+  padding:9px 4px;
+  border-radius:999px;
+  font-size:13.5px;
+  font-weight:500;
+  color:var(--ink-soft);
+  background:transparent;
+  border:1px solid var(--line);
+  cursor:pointer;
+  user-select:none;
+}
+.tab.active{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+}
+
+.view{display:none;}
+.view.active{display:block;}
+
+/* NOW CARD */
+.now-card{
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.now-card.gs{background:linear-gradient(155deg,var(--gs) 0%, #7d2f20 100%);color:#fbeee9;}
+.now-card.ds{background:linear-gradient(155deg,var(--ds) 0%, #14504d 100%);color:#e7f4f2;}
+.now-card.dm{background:linear-gradient(155deg,var(--dm) 0%, #493a68 100%);color:#eee9f6;}
+.now-card.empty{background:var(--ink);color:var(--paper);}
+.now-card .eyebrow{
+  font-size:12px;
+  opacity:.75;
+  margin-bottom:6px;
+}
+.now-card .big{
+  font-family:'Fraunces',serif;
+  font-size:30px;
+  font-weight:600;
+  line-height:1.15;
+  margin:0 0 4px;
+}
+.now-card .sub{font-size:14px;opacity:.9;}
+.now-card .tap{
+  margin-top:14px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  font-weight:600;
+  background:rgba(255,255,255,.16);
+  padding:8px 14px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+/* DAY SCHEDULE LIST */
+.section-title{
+  font-size:13px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--ink-soft);
+  margin:22px 2px 10px;
+}
+.period-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 4px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+}
+.period-row:last-child{border-bottom:none;}
+.period-row .pnum{
+  width:40px;flex-shrink:0;
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-soft);
+  line-height:1.3;
+}
+.period-row .pnum b{display:block;font-size:15px;color:var(--ink);}
+.period-row .dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+}
+.dot.gs{background:var(--gs);}
+.dot.ds{background:var(--ds);}
+.dot.dm{background:var(--dm);}
+.dot.empty{background:var(--line);}
+.period-row .info{flex:1;min-width:0;}
+.period-row .info .cls{font-weight:600;font-size:15px;}
+.period-row .info .les{font-size:12.5px;color:var(--ink-soft);}
+.period-row .chev{color:var(--line);font-size:18px;}
+.period-row.empty .info{color:var(--ink-soft);font-style:italic;font-size:13.5px;}
+.period-row.is-now{background:var(--paper-2);border-radius:10px;margin:0 -4px;padding-left:8px;padding-right:8px;}
+
+/* WEEK GRID */
+.day-tabs{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:6px;}
+.day-tab{
+  flex:1;
+  text-align:center;
+  padding:8px 2px;
+  border-radius:10px;
+  font-size:12.5px;
+  font-weight:600;
+  background:var(--paper-2);
+  color:var(--ink-soft);
+  cursor:pointer;
+  white-space:nowrap;
+}
+.day-tab.active{background:var(--ink);color:var(--paper);}
+
+/* CLASS GRID (özet) */
+.class-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:6px;
+}
+.class-chip{
+  border-radius:12px;
+  padding:10px 4px;
+  text-align:center;
+  font-weight:600;
+  font-size:13.5px;
+  background:var(--paper-2);
+  cursor:pointer;
+  border:1px solid transparent;
+}
+.class-chip.gs{background:var(--gs-soft);color:var(--gs);}
+.class-chip.ds{background:var(--ds-soft);color:var(--ds);}
+.class-chip.dm{background:var(--dm-soft);color:var(--dm);}
+.class-chip .l{display:block;font-size:9.5px;font-weight:500;opacity:.75;margin-top:1px;}
+
+/* LEGEND */
+.legend{display:flex;gap:14px;margin:14px 2px 4px;flex-wrap:wrap;}
+.legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);}
+.legend .dot{width:8px;height:8px;border-radius:50%;}
+
+/* MODAL / SHEET */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(33,31,28,.5);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:50;
+}
+.overlay.show{display:flex;}
+.sheet{
+  background:var(--paper);
+  width:100%;
+  max-width:520px;
+  border-radius:22px 22px 0 0;
+  padding:20px 20px 28px;
+  max-height:85vh;
+  overflow-y:auto;
+  animation:up .22s ease-out;
+}
+@keyframes up{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.sheet .handle{width:36px;height:4px;background:var(--line);border-radius:99px;margin:0 auto 16px;}
+.sheet .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px;}
+.sheet h2{font-family:'Fraunces',serif;font-size:23px;margin:0;font-weight:600;}
+.sheet .closeX{font-size:22px;color:var(--ink-soft);cursor:pointer;line-height:1;padding:4px;}
+.pill{
+  display:inline-block;
+  font-size:12px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:99px;
+  margin-bottom:14px;
+}
+.pill.gs{background:var(--gs-soft);color:var(--gs);}
+.pill.ds{background:var(--ds-soft);color:var(--ds);}
+.pill.dm{background:var(--dm-soft);color:var(--dm);}
+.block{margin-bottom:16px;}
+.block .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600;margin-bottom:4px;}
+.block .val{font-size:15px;line-height:1.45;}
+.progress-wrap{margin-top:6px;}
+.progress-bar{height:8px;border-radius:99px;background:var(--paper-2);overflow:hidden;}
+.progress-bar > div{height:100%;border-radius:99px;}
+.progress-txt{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+.empty-note{
+  background:var(--paper-2);
+  border-radius:12px;
+  padding:14px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+.star-list{margin-top:4px;}
+.star-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px;}
+.star-item:last-child{border-bottom:none;}
+.star-item .badge{font-size:15px;}
+
+/* BOTTOM NAV */
+nav.bottom{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--paper);
+  border-top:1px solid var(--line);
+  display:flex;
+  z-index:40;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+nav.bottom button{
+  flex:1;background:none;border:none;
+  padding:12px 4px 10px;
+  font-family:inherit;
+  color:var(--ink-soft);
+  font-size:11.5px;
+  font-weight:500;
+  cursor:pointer;
+}
+nav.bottom button .ic{display:block;font-size:19px;margin-bottom:2px;}
+nav.bottom button.active{color:var(--ink);font-weight:700;}
+
+/* ADMIN */
+.login-box{
+  max-width:340px;margin:60px auto 0;text-align:center;padding:0 20px;
+}
+.login-box h2{font-family:'Fraunces',serif;font-size:24px;margin-bottom:4px;}
+.login-box p{color:var(--ink-soft);font-size:13.5px;margin-bottom:20px;}
+input[type=time]{font-family:inherit;font-size:15px;padding:9px 8px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);flex:1;min-width:0;}
+.period-edit-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.period-edit-row .lbl{width:58px;font-weight:600;font-size:14px;flex-shrink:0;}
+.period-edit-row .dash{color:var(--ink-soft);}
+input[type=password],input[type=text],textarea,select{
+  width:100%;
+  font-family:inherit;
+  font-size:15px;
+  padding:11px 13px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  margin-bottom:10px;
+}
+textarea{min-height:90px;resize:vertical;}
+button.primary{
+  width:100%;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:14.5px;
+  cursor:pointer;
+}
+button.ghost{
+  width:100%;
+  background:none;
+  border:1px solid var(--line);
+  padding:11px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:13.5px;
+  color:var(--ink);
+  cursor:pointer;
+  margin-top:8px;
+}
+.admin-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:14px;
+}
+.admin-card h3{font-size:15px;margin:0 0 10px;font-family:'Fraunces',serif;font-weight:600;}
+.admin-card .hint{font-size:12px;color:var(--ink-soft);margin:-6px 0 10px;}
+.class-select-row{display:flex;gap:8px;margin-bottom:10px;}
+.class-select-row select{margin-bottom:0;}
+.saved-flash{
+  font-size:12.5px;color:var(--ds);font-weight:600;
+  height:16px;
+}
+.topbar-admin{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 6px;max-width:520px;margin:0 auto;}
+.topbar-admin h1{font-family:'Fraunces',serif;font-size:21px;margin:0;}
+.logout{font-size:12.5px;color:var(--ink-soft);cursor:pointer;text-decoration:underline;}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div>
+      <h1>Ders Takip</h1>
+      <div class="who">Murat Günaydın · Görsel &amp; Dijital Sanatlar</div>
+    </div>
+    <div class="clockbox">
+      <div class="time" id="clockTime">--:--</div>
+      <div class="date" id="clockDate">-</div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-view="today">Bugün</div>
+  <div class="tab" data-view="week">Hafta</div>
+  <div class="tab" data-view="classes">Sınıflar</div>
+</div>
+
+<div class="wrap">
+
+  <!-- BUGÜN -->
+  <section class="view active" id="view-today">
+    <div id="nowCardHolder"></div>
+    <div class="section-title" id="todayTitle">Bugünkü Program</div>
+    <div id="todayList"></div>
+  </section>
+
+  <!-- HAFTA -->
+  <section class="view" id="view-week">
+    <div class="day-tabs" id="dayTabs"></div>
+    <div id="weekList"></div>
+    <div class="legend">
+      <span><i class="dot gs"></i> Görsel Sanatlar</span>
+      <span><i class="dot ds"></i> Dijital Sanatlar</span>
+      <span><i class="dot dm"></i> Dijital ve Müzik</span>
+    </div>
+  </section>
+
+  <!-- SINIFLAR -->
+  <section class="view" id="view-classes">
+    <div class="section-title">7. Sınıflar</div>
+    <div class="class-grid" id="grid7"></div>
+    <div class="section-title">8. Sınıflar</div>
+    <div class="class-grid" id="grid8"></div>
+  </section>
+
+</div>
+
+<nav class="bottom">
+  <button class="active" data-nav="today"><span class="ic">◐</span>Bugün</button>
+  <button data-nav="week"><span class="ic">▤</span>Hafta</button>
+  <button data-nav="classes"><span class="ic">▣</span>Sınıflar</button>
+  <button data-nav="admin"><span class="ic">⚙</span>Yönetici</button>
+</nav>
+
+<!-- DETAY SHEET -->
+<div class="overlay" id="detailOverlay">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="head">
+      <h2 id="dtCls">7/A</h2>
+      <div class="closeX" id="dtClose">✕</div>
+    </div>
+    <div id="dtPill"></div>
+    <div id="dtBody"></div>
+  </div>
+</div>
+
+<!-- ADMIN VIEW (tam sayfa) -->
+<div id="adminScreen" style="display:none;">
+  <div class="login-box" id="loginBox">
+    <h2>Yönetici Girişi</h2>
+    <p>Öğrenci listeleri, yıldız öğrenci ve program ayarları için şifre girin.</p>
+    <input type="password" id="adminPass" placeholder="Şifre">
+    <button class="primary" id="loginBtn">Giriş Yap</button>
+    <button class="ghost" id="backFromLogin">← Geri dön</button>
+    <div class="saved-flash" id="loginErr"></div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <div class="topbar-admin">
+      <h1>Yönetici Paneli</h1>
+      <span class="logout" id="logoutBtn">Çıkış</span>
+    </div>
+    <div class="wrap">
+
+      <div class="admin-card">
+        <h3>Öğrenci Listesi &amp; Yıldız Öğrenci</h3>
+        <div class="hint">Bir sınıf seç, öğrenci adlarını her satıra bir isim olacak şekilde yapıştır, sonra o sınıfın yıldız öğrencisini işaretle.</div>
+        <div class="class-select-row">
+          <select id="adminClassSelect"></select>
+        </div>
+        <textarea id="studentListArea" placeholder="Örn:&#10;Ahmet Yılmaz&#10;Ayşe Kaya&#10;..."></textarea>
+        <button class="primary" id="saveStudentsBtn">Listeyi Kaydet</button>
+        <div class="saved-flash" id="studentsFlash"></div>
+        <div style="margin-top:14px;">
+          <div class="hint" style="margin-bottom:6px;">Yıldız öğrenciyi seç:</div>
+          <select id="starSelect"></select>
+          <button class="ghost" id="saveStarBtn">Yıldız Öğrenci Olarak Kaydet</button>
+        </div>
+        <div class="star-list" id="starOverview"></div>
+      </div>
+
+      <div class="admin-card">
+        <h3>Şifreyi Değiştir</h3>
+        <input type="text" id="newPass" placeholder="Yeni şifre">
+        <button class="ghost" id="changePassBtn">Şifreyi Güncelle</button>
+        <div class="saved-flash" id="passFlash"></div>
+      </div>
+
+      <div class="admin-card">
+        <h3>Yıllık Planları Güncelle</h3>
+        <div class="hint">Görsel Sanatlar (7. ve 8. sınıf) ve Dijital Sanatlar (7. sınıf, "Dijital ve Müzik" saatlerini de kapsar) planları sisteme yüklü. Yeni bir yıllık plan gönderdiğinde Claude ile burayı güncelleyebilirsin. Elle düzenlemek istersen: her satır: hafta;başlangıç(YYYY-AA-GG);bitiş;tema;konu;kazanım</div>
+        <select id="planCourseSelect">
+          <option value="GS7">Görsel Sanatlar - 7. Sınıf</option>
+          <option value="GS8">Görsel Sanatlar - 8. Sınıf</option>
+          <option value="DS7">Dijital Sanatlar - 7. Sınıf (Dijital ve Müzik dahil)</option>
+        </select>
+        <textarea id="planImportArea" placeholder="1;2026-09-14;2026-09-18;1. Tema...;Konu...;Kazanım..."></textarea>
+        <button class="primary" id="savePlanBtn">Planı Kaydet</button>
+        <div class="saved-flash" id="planFlash"></div>
+      </div>
+
+      <div class="admin-card">
+        <h3>Ders Saatleri (Sabahçı)</h3>
+        <div class="hint">Her dersin başlangıç ve bitiş saatini değiştirebilirsin. Okul saatleri tekrar değişirse buradan güncelle.</div>
+        <div id="periodEditor"></div>
+        <button class="primary" id="savePeriodsBtn">Saatleri Kaydet</button>
+        <button class="ghost" id="resetPeriodsBtn">Okulun Güncel Saatlerine Dön</button>
+        <div class="saved-flash" id="periodsFlash"></div>
+      </div>
+
+      <div class="admin-card">
+        <h3>Verileri Sıfırla</h3>
+        <div class="hint">Tüm öğrenci listelerini, yıldız öğrencileri, girilen ek planları ve ders saati değişikliklerini bu cihazdan siler.</div>
+        <button class="ghost" id="resetBtn">Her Şeyi Sıfırla</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ VERİ ============ */
+var PLAN = {"GS7":[{"h":1,"s":"2026-09-14","e":"2026-09-18","t":"DUYGULARDA HİKAYELER SAKLI","k":"Öğrencilerimizin okudukları bir hikâyeden veya kendilerine ait gerçek yaşam hikâyelerinden yola çıkarak soyut düşünceleri bir resim tasvirlemesiyle somut hale getirmeleri istenir. 35x50 veya 25x35 Resim değişik boya","z":"G.7.1.3. Yaşantısının herhangi bir anını hikâyeleştirerek görsel sanat çalışmasına yansıtır. (GİB) G.7.3.8. Bilgi ve deneyimlerin sanat eserine yönelik bakış açısını nasıl etkilediğini açıklar. (SEE) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. Renk: Kromatik renk ilişkileri Kroma: Bir rengin parlaklıktan donukluğa veya ışıltılı hâlinden griliğe doğru geçişi Çizgi: Zıtlık, derecelendirme Mekân: Boşluk, doluluk Vurgu: Odak nokta, baskın Oran-Orantı: Gerçekçi, abartılı (GİB)","tat":false},{"h":2,"s":"2026-09-21","e":"2026-09-25","t":"DUYGULARDA HİKAYELER SAKLI","k":"Öğrencilerimizin okudukları bir hikâyeden veya kendilerine ait gerçek yaşam hikâyelerinden yola çıkarak soyut düşünceleri bir resim tasvirlemesiyle somut hale getirmeleri istenir. 35x50 veya 25x35 Resim değişik boya","z":"G.7.1.3. Yaşantısının herhangi bir anını hikâyeleştirerek görsel sanat çalışmasına yansıtır. (GİB) G.7.3.8. Bilgi ve deneyimlerin sanat eserine yönelik bakış açısını nasıl etkilediğini açıklar. (SEE) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. Renk: Kromatik renk ilişkileri Kroma: Bir rengin parlaklıktan donukluğa veya ışıltılı hâlinden griliğe doğru geçişi Çizgi: Zıtlık, derecelendirme Mekân: Boşluk, doluluk Vurgu: Odak nokta, baskın Oran-Orantı: Gerçekçi, abartılı (GİB)","tat":false},{"h":3,"s":"2026-09-28","e":"2026-10-02","t":"DUYGULARDA HİKAYELER SAKLI","k":"Öğrencilerimizin okudukları bir hikâyeden veya kendilerine ait gerçek yaşam hikâyelerinden yola çıkarak soyut düşünceleri bir resim tasvirlemesiyle somut hale getirmeleri istenir. 35x50 veya 25x35 Resim değişik boya","z":"G.7.1.3. Yaşantısının herhangi bir anını hikâyeleştirerek görsel sanat çalışmasına yansıtır. (GİB) G.7.3.8. Bilgi ve deneyimlerin sanat eserine yönelik bakış açısını nasıl etkilediğini açıklar. (SEE) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. Renk: Kromatik renk ilişkileri Kroma: Bir rengin parlaklıktan donukluğa veya ışıltılı hâlinden griliğe doğru geçişi Çizgi: Zıtlık, derecelendirme Mekân: Boşluk, doluluk Vurgu: Odak nokta, baskın Oran-Orantı: Gerçekçi, abartılı (GİB)","tat":false},{"h":4,"s":"2026-10-05","e":"2026-10-09","t":"BİR SANAT ALANI SEÇELİM","k":"Çocukların seçtiği alanla ilgili sanat etkinliği, sunum dosyası veya tanıtım Afişi hazırlamaları istenir. Renkli fon kartonları, yapıştırıcı, cetvel makas, atık nesneler, sanat görselleri, renkli boyalar, dijital baskı. SIFIR ATIK SANATSAL YAPIT Yerli ve yabancı resim sanatçılarının eserlerinden etkilendiği ürünü bakarak çizer ve kendine göre yorumlar. Röprodüksiyon veya kopyalama. ($) El sanatları ve resim ustalarının ticaret alanında kazanımları konulu söyleşi.","z":"G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. (GİB) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar (KM) G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) (GİB)","tat":false},{"h":5,"s":"2026-10-12","e":"2026-10-16","t":"BİR SANAT ALANI SEÇELİM","k":"Çocukların seçtiği alanla ilgili sanat etkinliği, sunum dosyası veya tanıtım Afişi hazırlamaları istenir. Renkli fon kartonları, yapıştırıcı, cetvel makas, atık nesneler, sanat görselleri, renkli boyalar, dijital baskı. SIFIR ATIK SANATSAL YAPIT Yerli ve yabancı resim sanatçılarının eserlerinden etkilendiği ürünü bakarak çizer ve kendine göre yorumlar. Röprodüksiyon veya kopyalama. ($) El sanatları ve resim ustalarının ticaret alanında kazanımları konulu söyleşi.","z":"G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. (GİB) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar (KM) G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) (GİB)","tat":false},{"h":6,"s":"2026-10-19","e":"2026-10-23","t":"BİR SANAT ALANI SEÇELİM","k":"Çocukların seçtiği alanla ilgili sanat etkinliği, sunum dosyası veya tanıtım Afişi hazırlamaları istenir. Renkli fon kartonları, yapıştırıcı, cetvel makas, atık nesneler, sanat görselleri, renkli boyalar, dijital baskı. SIFIR ATIK SANATSAL YAPIT Yerli ve yabancı resim sanatçılarının eserlerinden etkilendiği ürünü bakarak çizer ve kendine göre yorumlar. Röprodüksiyon veya kopyalama. ($) El sanatları ve resim ustalarının ticaret alanında kazanımları konulu söyleşi.","z":"G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. (GİB) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar (KM) G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) (GİB)","tat":false},{"h":7,"s":"2026-10-26","e":"2026-10-30","t":"BİR SANAT ALANI SEÇELİM","k":"Çocukların seçtiği alanla ilgili sanat etkinliği, sunum dosyası veya tanıtım Afişi hazırlamaları istenir. Renkli fon kartonları, yapıştırıcı, cetvel makas, atık nesneler, sanat görselleri, renkli boyalar, dijital baskı. SIFIR ATIK SANATSAL YAPIT Yerli ve yabancı resim sanatçılarının eserlerinden etkilendiği ürünü bakarak çizer ve kendine göre yorumlar. Röprodüksiyon veya kopyalama. ($) El sanatları ve resim ustalarının ticaret alanında kazanımları konulu söyleşi.","z":"G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. (GİB) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar (KM) G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) (GİB)","tat":false},{"h":8,"s":"2026-11-02","e":"2026-11-06","t":"SANAT ELEŞTİRMENİ OLMAK","k":"Bir sanatçının eserinde kullandığı malzeme yaklaşım biçimi, tarzı ve dönemiyle ilgili yargılarda bulunması istenir. Eleştiri ve Sanat Estetiği","z":"G.7.2.1. Sanat eserlerindeki üslupları açıklar. Özgün sanat eserleri ile tasarımlar üzerinde sanatçıların kullandıkları fırça darbeleri, renkleri, bilgi objeleri, konu seçimleri ve biçimlerinin sanatçının üslubunu oluşturduğu","tat":false},{"h":9,"s":"2026-11-09","e":"2026-11-13","t":"SANAT ELEŞTİRMENİ OLMAK","k":"Bir sanatçının eserinde kullandığı malzeme yaklaşım biçimi, tarzı ve dönemiyle ilgili yargılarda bulunması istenir. Eleştiri ve Sanat Estetiği","z":"G.7.2.1. Sanat eserlerindeki üslupları açıklar. Özgün sanat eserleri ile tasarımlar üzerinde sanatçıların kullandıkları fırça darbeleri, renkleri, bilgi objeleri, konu seçimleri ve biçimlerinin sanatçının üslubunu oluşturduğu","tat":false},{"h":10,"s":"2026-11-16","e":"2026-11-20","t":"1. Dönem Ara Tatil 16/20 Kasım (5 Gün)","k":"","z":"1. Dönem Ara Tatil 16/20 Kasım (5 Gün)","tat":true},{"h":11,"s":"2026-11-23","e":"2026-11-27","t":"SANAT ELEŞTİRMENİ OLMAK","k":"Bir sanatçının eserinde kullandığı malzeme yaklaşım biçimi, tarzı ve dönemiyle ilgili yargılarda bulunması istenir. Eleştiri ve Sanat Estetiği","z":"üzerinde durulur. Yerli ve yabancı sanatçı ile tasarımcılardan örnekler verilir, eserleri incelenir. (KM)","tat":false},{"h":12,"s":"2026-11-30","e":"2026-12-04","t":"HAYATA HANGİ AÇIDAN BAKALIM?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.7.1.5. Görsel sanat çalışmasında farklı perspektif tekniklerini kullanır. Mekânda derinlik etkisi yaratmak için çizgi ve hava (renk) perspektifi birlikte kullandırılır. (GİB) TEKLİ KAÇIŞ","tat":false},{"h":13,"s":"2026-12-07","e":"2026-12-11","t":"HAYATA HANGİ AÇIDAN BAKALIM?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.7.1.5. Görsel sanat çalışmasında farklı perspektif tekniklerini kullanır. Mekânda derinlik etkisi yaratmak için çizgi ve hava (renk) perspektifi birlikte kullandırılır. (GİB) TEKLİ KAÇIŞ","tat":false},{"h":14,"s":"2026-12-14","e":"2026-12-18","t":"HAYATA HANGİ AÇIDAN BAKALIM?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.7.1.5. Görsel sanat çalışmasında farklı perspektif tekniklerini kullanır. Mekânda derinlik etkisi yaratmak için çizgi ve hava (renk) perspektifi birlikte kullandırılır. (GİB) TEKLİ KAÇIŞ","tat":false},{"h":15,"s":"2026-12-21","e":"2026-12-25","t":"HAYATA HANGİ AÇIDAN BAKALIM?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.7.1.5. Görsel sanat çalışmasında farklı perspektif tekniklerini kullanır. Mekânda derinlik etkisi yaratmak için çizgi ve hava (renk) perspektifi birlikte kullandırılır. (GİB) TEKLİ KAÇIŞ","tat":false},{"h":16,"s":"2026-12-28","e":"2027-01-01","t":"HAYATA HANGİ AÇIDAN BAKALIM?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.7.1.5. Görsel sanat çalışmasında farklı perspektif tekniklerini kullanır. Mekânda derinlik etkisi yaratmak için çizgi ve hava (renk) perspektifi birlikte kullandırılır. (GİB) TEKLİ KAÇIŞ","tat":false},{"h":17,"s":"2027-01-04","e":"2027-01-08","t":"KENDİNE BİR TARZ OLUŞTUR","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) görsel sanat çalışmasında kullanması sağlanır.(GİB) G.7.1.6. Gözleme dayalı çizimler yapar.(GİB) G.7.2.2. Sanatçıların toplumda üstlendiği rolleri yorumlar. (KM)","tat":false},{"h":18,"s":"2027-01-11","e":"2027-01-15","t":"KENDİNE BİR TARZ OLUŞTUR","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) görsel sanat çalışmasında kullanması sağlanır.(GİB) G.7.1.6. Gözleme dayalı çizimler yapar.(GİB) G.7.2.2. Sanatçıların toplumda üstlendiği rolleri yorumlar. (KM)","tat":false},{"h":19,"s":"2027-01-18","e":"2027-01-22","t":"KENDİNE BİR TARZ OLUŞTUR","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.7.1.2. Görsel sanat çalışmasında sanat tekniklerini birlikte kullanır. Bu kazanımda öğrencinin sanat tekniklerinden birkaçını (baskı teknikleri, mozaik, kolaj, kâğıt vitray, sulu boya vb.) görsel sanat çalışmasında kullanması sağlanır.(GİB) G.7.1.6. Gözleme dayalı çizimler yapar.(GİB) G.7.2.2. Sanatçıların toplumda üstlendiği rolleri yorumlar. (KM)","tat":false},{"h":20,"s":"2027-01-25","e":"2027-01-29","t":"25 Ocak 05 Şubat OKUL YARIYIL TATİLİ (10 GÜN)","k":"","z":"25 Ocak 05 Şubat OKUL YARIYIL TATİLİ (10 GÜN)","tat":true},{"h":21,"s":"2027-02-08","e":"2027-02-12","t":"KAHRAMANLAR BİZDEN ÇIKAR","k":"Tarihi olayların sanata etkisini bilerek serbest teknik ile bir kahramanlık hikâyesi resmi yapar.","z":"G.7.2.4. Tarihî olayların sanat eserleri üzerindeki etkisini inceler. Göç, savaş, reform, ekonomik buhran vb. olayların sanatçıyı, dolayısı ile eserlerini de etkilediği üzerinde durularak örnekler üzerinden açıklanır. (KM) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar tartışılır. (KM) G.7.3.1. Sanat eserinde kullanılan görsel dilin ifadeleri aktarmadaki etkisini analiz eder. (SEE)","tat":false},{"h":22,"s":"2027-02-15","e":"2027-02-19","t":"KAHRAMANLAR BİZDEN ÇIKAR","k":"Tarihi olayların sanata etkisini bilerek serbest teknik ile bir kahramanlık hikâyesi resmi yapar.","z":"G.7.2.4. Tarihî olayların sanat eserleri üzerindeki etkisini inceler. Göç, savaş, reform, ekonomik buhran vb. olayların sanatçıyı, dolayısı ile eserlerini de etkilediği üzerinde durularak örnekler üzerinden açıklanır. (KM) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar tartışılır. (KM) G.7.3.1. Sanat eserinde kullanılan görsel dilin ifadeleri aktarmadaki etkisini analiz eder. (SEE)","tat":false},{"h":23,"s":"2027-02-22","e":"2027-02-26","t":"KAHRAMANLAR BİZDEN ÇIKAR","k":"Tarihi olayların sanata etkisini bilerek serbest teknik ile bir kahramanlık hikâyesi resmi yapar.","z":"G.7.2.4. Tarihî olayların sanat eserleri üzerindeki etkisini inceler. Göç, savaş, reform, ekonomik buhran vb. olayların sanatçıyı, dolayısı ile eserlerini de etkilediği üzerinde durularak örnekler üzerinden açıklanır. (KM) G.7.2.3. Sanatçıların topluma sağladığı katkıları açıklar. Sanatçıların kültürel, sosyal, ekonomik, eğitsel değer vb. açılardan topluma yaptığı katkılar tartışılır. (KM) G.7.3.1. Sanat eserinde kullanılan görsel dilin ifadeleri aktarmadaki etkisini analiz eder. (SEE)","tat":false},{"h":24,"s":"2027-03-01","e":"2027-03-05","t":"ATIKLARDAN SANATA","k":"Asamblaj yaparak atıklarla çalışmalar yapar.","z":"G.7.1.7. Atık malzemeleri kullanarak üç boyutlu çalışma yapar. Kazanımla ilgili değerler üzerinde durulmalıdır. (GİB)","tat":false},{"h":25,"s":"2027-03-08","e":"2027-03-12","t":"2. Dönem Ara Tatil 08/12 Mart2027","k":"(5 Gün)","z":"2. Dönem Ara Tatil 08/12 Mart2027 (5 Gün)","tat":true},{"h":26,"s":"2027-03-22","e":"2027-03-26","t":"ATIKLARDAN SANATA","k":"Asamblaj yaparak atıklarla çalışmalar yapar.","z":"G.7.1.4. Görsel sanat çalışmasında geleneksel ve güncel sanat malzemeleri ile teknikleri kullanır. Geleneksel malzemeler olarak kuru","tat":false},{"h":27,"s":"2027-03-29","e":"2027-04-02","t":"ATIKLARDAN SANATA","k":"Asamblaj yaparak atıklarla çalışmalar yapar.","z":"G.7.1.4. Görsel sanat çalışmasında geleneksel ve güncel sanat malzemeleri ile teknikleri kullanır. Geleneksel malzemeler olarak kuru","tat":false},{"h":28,"s":"2027-04-05","e":"2027-04-09","t":"TEKSTÜR (DOKU) ÇALIŞMASI","k":"Görsel sanat çalışmasında farklı baskı teknikleri kullanarak ve serbest el.yordamıyla değişik dokular oluşturur Öğrencilerin Farklı dokuları araştırıp öğrenerek uygulamaları istenir. Doğal ve suni dokular.","z":"boya, sulu boya, pastel boya, fırça vb.; güncel sanat malzemeleri olarak akrilik kalem, sulu boya kalemi vb. tercih edilebilir. (GİB) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. (GİB)","tat":false},{"h":29,"s":"2027-04-12","e":"2027-04-16","t":"TEKSTÜR (DOKU) ÇALIŞMASI","k":"Görsel sanat çalışmasında farklı baskı teknikleri kullanarak ve serbest el.yordamıyla değişik dokular oluşturur Öğrencilerin Farklı dokuları araştırıp öğrenerek uygulamaları istenir. Doğal ve suni dokular.","z":"boya, sulu boya, pastel boya, fırça vb.; güncel sanat malzemeleri olarak akrilik kalem, sulu boya kalemi vb. tercih edilebilir. (GİB) G.7.1.8. Görsel sanat çalışmalarını oluştururken sanat elemanları ve tasarım ilkelerini kullanır. (GİB)","tat":false},{"h":30,"s":"2027-04-19","e":"2027-04-23","t":"BİR RENK BİNLERCE AHENK (LAVİ RESİM)","k":"","z":"G.7.3.4. Görsel sanat eserlerindeki sanatçının görsel sanat eserine yansıyan üslubunu fark eder. (SEE) G.7.3.8. Bilgi ve deneyimlerin sanat eserine yönelik bakış açısını nasıl etkilediğini açıklar. (SEE) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir.(SEE)","tat":false},{"h":31,"s":"2027-04-26","e":"2027-04-30","t":"BİR RENK BİNLERCE AHENK (LAVİ RESİM)","k":"","z":"G.7.3.4. Görsel sanat eserlerindeki sanatçının görsel sanat eserine yansıyan üslubunu fark eder. (SEE) G.7.3.8. Bilgi ve deneyimlerin sanat eserine yönelik bakış açısını nasıl etkilediğini açıklar. (SEE) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir.(SEE)","tat":false},{"h":32,"s":"2027-05-03","e":"2027-05-07","t":"BİR RENK BİNLERCE AHENK (LAVİ RESİM)","k":"","z":"G.7.3.4. Görsel sanat eserlerindeki sanatçının görsel sanat eserine yansıyan üslubunu fark eder. (SEE) G.7.3.8. Bilgi ve deneyimlerin sanat eserine yönelik bakış açısını nasıl etkilediğini açıklar. (SEE) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir.(SEE)","tat":false},{"h":33,"s":"2027-05-10","e":"2027-05-14","t":"BİR REKLAMCI OLMAK GRAFİK TASARIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.7.3.7. Çağdaş medyadaki imaj, yazı ve sembol gibi unsurların yönlendirici etkisini açıklar. (SEE) G.7.3.6. Sanat eserinde sosyal ve kültürel inanışların etkisini yorumlar. Farklı kültürdeki inanışların ve sosyal çevrenin eser üzerine etkisi yorumlanır. Kazanımla ilgili değerler üzerinde durulmalıdır. (SEE) G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB)","tat":false},{"h":34,"s":"2027-05-17","e":"2027-05-21","t":"BİR REKLAMCI OLMAK GRAFİK TASARIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.7.3.7. Çağdaş medyadaki imaj, yazı ve sembol gibi unsurların yönlendirici etkisini açıklar. (SEE) G.7.3.6. Sanat eserinde sosyal ve kültürel inanışların etkisini yorumlar. Farklı kültürdeki inanışların ve sosyal çevrenin eser üzerine etkisi yorumlanır. Kazanımla ilgili değerler üzerinde durulmalıdır. (SEE) G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB)","tat":false},{"h":35,"s":"2027-05-24","e":"2027-05-28","t":"BİR REKLAMCI OLMAK GRAFİK TASARIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.7.3.7. Çağdaş medyadaki imaj, yazı ve sembol gibi unsurların yönlendirici etkisini açıklar. (SEE) G.7.3.6. Sanat eserinde sosyal ve kültürel inanışların etkisini yorumlar. Farklı kültürdeki inanışların ve sosyal çevrenin eser üzerine etkisi yorumlanır. Kazanımla ilgili değerler üzerinde durulmalıdır. (SEE) G.7.1.1. Görsel sanat çalışmalarını oluşturmak için araştırmaya dayalı uygulama sürecinin basamaklarını eskiz defterinde gösterir. Sosyal girişimcilik bağlamında planlama yapma, yaptıklarını raporlaştırma, sunma ve savunma konularına değinilebilir. (GİB)","tat":false},{"h":36,"s":"2027-05-31","e":"2027-06-04","t":"SANAT GİZEMİ IŞIK SERGİSİ","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.7.3.2. Sanat eserini değerlendirmek için sanat eleştirisi yöntemini kullanır. (S.E.E) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir. Kişisel bilginin bir sanat eserini gözlemleyerek ve inceleyerek elde edilen bilgi olduğu vurgulanır. (SEE)","tat":false},{"h":37,"s":"2027-06-07","e":"2027-06-11","t":"SANAT GİZEMİ IŞIK SERGİSİ","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.7.3.2. Sanat eserini değerlendirmek için sanat eleştirisi yöntemini kullanır. (S.E.E) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir. Kişisel bilginin bir sanat eserini gözlemleyerek ve inceleyerek elde edilen bilgi olduğu vurgulanır. (SEE)","tat":false},{"h":38,"s":"2027-06-14","e":"2027-06-18","t":"SANAT GİZEMİ IŞIK SERGİSİ","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.7.3.2. Sanat eserini değerlendirmek için sanat eleştirisi yöntemini kullanır. (S.E.E) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir. Kişisel bilginin bir sanat eserini gözlemleyerek ve inceleyerek elde edilen bilgi olduğu vurgulanır. (SEE)","tat":false},{"h":39,"s":"2027-06-21","e":"2027-06-25","t":"SANAT GİZEMİ IŞIK SERGİSİ","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.7.3.2. Sanat eserini değerlendirmek için sanat eleştirisi yöntemini kullanır. (S.E.E) G.7.3.5. Kişisel ve bağlamsal bilgiler temelinde sanat eserini inceler. Bağlamsal bilginin sanatçının içinde bulunduğu çevre ve şartlar, sanat eserinin işlevi, sanatçıyı etkileyen dinsel, düşünsel ve kültürel özellikleri içeren bilgi olduğuna dikkat edilmelidir. Kişisel bilginin bir sanat eserini gözlemleyerek ve inceleyerek elde edilen bilgi olduğu vurgulanır. (SEE)","tat":false}],"GS8":[{"h":1,"s":"2026-09-14","e":"2026-09-18","t":"PİCASSO VE KÜBİZM","k":"Kübist resim anlayışı ve sürrealist resim akımı örneklerinden bakarak esinlenir değişik açı, anlayış ve renk uygulamasıyla resimler yapar. Resim kâğıdı (35x25 veya 35*50), resim kalemi 3b serbest boya tekniği.","z":"G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. (G.İ.B) G.8.1.5 Güncel Olayları görsel sanat çalışmasına yansıtır. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false},{"h":2,"s":"2026-09-21","e":"2026-09-25","t":"PİCASSO VE KÜBİZM","k":"Kübist resim anlayışı ve sürrealist resim akımı örneklerinden bakarak esinlenir değişik açı, anlayış ve renk uygulamasıyla resimler yapar. Resim kâğıdı (35x25 veya 35*50), resim kalemi 3b serbest boya tekniği.","z":"G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. (G.İ.B) G.8.1.5 Güncel Olayları görsel sanat çalışmasına yansıtır. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false},{"h":3,"s":"2026-09-28","e":"2026-10-02","t":"PİCASSO VE KÜBİZM","k":"Kübist resim anlayışı ve sürrealist resim akımı örneklerinden bakarak esinlenir değişik açı, anlayış ve renk uygulamasıyla resimler yapar. Resim kâğıdı (35x25 veya 35*50), resim kalemi 3b serbest boya tekniği.","z":"G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. (G.İ.B) G.8.1.5 Güncel Olayları görsel sanat çalışmasına yansıtır. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false},{"h":4,"s":"2026-10-05","e":"2026-10-09","t":"FARKI FARK ETTİRMEK BENİM TARZIM","k":"Hollandalı ressam Vincent Van Gogh’a ait olan bir resmin estetik değeri, boya tekniği anlayışı ve şartları araştırılarak değerlendirilmesi yapılır. Farklı boya teknikleriyle bu eserin benzeri resimler çizilmesi istenir.","z":"G.8.3.3 Sanatla ilişkili olarak estetiğin ne olduğunu ifade eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M) G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.1.8 Farklı teknik ve materyalleri bir arada kullanarak üç boyutlu çalışma yapar. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M)","tat":false},{"h":5,"s":"2026-10-12","e":"2026-10-16","t":"FARKI FARK ETTİRMEK BENİM TARZIM","k":"Hollandalı ressam Vincent Van Gogh’a ait olan bir resmin estetik değeri, boya tekniği anlayışı ve şartları araştırılarak değerlendirilmesi yapılır. Farklı boya teknikleriyle bu eserin benzeri resimler çizilmesi istenir.","z":"G.8.3.3 Sanatla ilişkili olarak estetiğin ne olduğunu ifade eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M) G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.1.8 Farklı teknik ve materyalleri bir arada kullanarak üç boyutlu çalışma yapar. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M)","tat":false},{"h":6,"s":"2026-10-19","e":"2026-10-23","t":"FARKI FARK ETTİRMEK BENİM TARZIM","k":"Hollandalı ressam Vincent Van Gogh’a ait olan bir resmin estetik değeri, boya tekniği anlayışı ve şartları araştırılarak değerlendirilmesi yapılır. Farklı boya teknikleriyle bu eserin benzeri resimler çizilmesi istenir.","z":"G.8.3.3 Sanatla ilişkili olarak estetiğin ne olduğunu ifade eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M) G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.1.8 Farklı teknik ve materyalleri bir arada kullanarak üç boyutlu çalışma yapar. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M)","tat":false},{"h":7,"s":"2026-10-26","e":"2026-10-30","t":"FARKI FARK ETTİRMEK BENİM TARZIM","k":"Hollandalı ressam Vincent Van Gogh’a ait olan bir resmin estetik değeri, boya tekniği anlayışı ve şartları araştırılarak değerlendirilmesi yapılır. Farklı boya teknikleriyle bu eserin benzeri resimler çizilmesi istenir.","z":"G.8.3.3 Sanatla ilişkili olarak estetiğin ne olduğunu ifade eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M) G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.1.8 Farklı teknik ve materyalleri bir arada kullanarak üç boyutlu çalışma yapar. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M)","tat":false},{"h":8,"s":"2026-11-02","e":"2026-11-06","t":"FARKI FARK ETTİRMEK BENİM TARZIM","k":"Hollandalı ressam Vincent Van Gogh’a ait olan bir resmin estetik değeri, boya tekniği anlayışı ve şartları araştırılarak değerlendirilmesi yapılır. Farklı boya teknikleriyle bu eserin benzeri resimler çizilmesi istenir.","z":"G.8.3.3 Sanatla ilişkili olarak estetiğin ne olduğunu ifade eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M) G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.1.8 Farklı teknik ve materyalleri bir arada kullanarak üç boyutlu çalışma yapar. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır (K.M)","tat":false},{"h":9,"s":"2026-11-09","e":"2026-11-13","t":"SANAT VE TARİH KARDEŞLİĞİ","k":"Ülkemizde ve dünya da kültür mirası kapsamına alınan mimari yapıların internet üzerinden araştırılması yapılarak bulunan görsellerin (35x50 fon kâğıdı üzerine yapıştırılarak veya kolaj sunum hazırlama.","z":"G.8.1.5. Güncel olayları görsel sanat çalışmasına yansıtır. Ekonomi, doğal afetler, çevre duyarlılığı, iş sağlığı güvenliği, bilimsel gelişmeler, teknolojik gelişmeler vb. konulardan yararlanılabilir. (G.İ.B)","tat":false},{"h":10,"s":"2026-11-16","e":"2026-11-20","t":"1. DÖNEM ARA TATİL 16-20 Kasım 2026 (5 iş günü)","k":"","z":"1. DÖNEM ARA TATİL 16-20 Kasım 2026 (5 iş günü)","tat":true},{"h":11,"s":"2026-11-23","e":"2026-11-27","t":"SANAT VE TARİH KARDEŞLİĞİ","k":"Ülkemizde ve dünya da kültür mirası kapsamına alınan mimari yapıların internet üzerinden araştırılması yapılarak bulunan görsellerin (35x50 fon kâğıdı üzerine yapıştırılarak veya kolaj sunum hazırlama.","z":"G.8.2.4 Müzelerdeki eserlerin korunmasının önemini kavrar. (K.M) G.8.2.2 Sanatçının toplumda yüklendiği rolleri bilir. (K.M) G.8.3.7 Popüler kültürün günümüz görsel sanatlarına etkisini fark eder. (S.E.E)","tat":false},{"h":12,"s":"2026-11-30","e":"2026-12-04","t":"BİR DERİNLİK HİKAYESİ ?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.8.1.6 Görsel sanat çalışmasında farklı perspektif (derinlik) tekniklerini kullanır. Mekânda derinlik etkisi oluşturmak için tek kaçarlı / iki kaçarlı ve üç kaçarlı perspektif ve hava perspektifini birlikte kullanır(G.İ.B) G.8.3.4 Kendisinin ve akranlarının çalışmalarını analiz eder. (S.E.E) G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. Çizimler; kuş bakışı, balıkgözü, solucan bakışı, karşıdan bakış farklı bakış acılarıyla oluşturur. (G.İ.B) TEKLİ KAÇIŞ","tat":false},{"h":13,"s":"2026-12-07","e":"2026-12-11","t":"BİR DERİNLİK HİKAYESİ ?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.8.1.6 Görsel sanat çalışmasında farklı perspektif (derinlik) tekniklerini kullanır. Mekânda derinlik etkisi oluşturmak için tek kaçarlı / iki kaçarlı ve üç kaçarlı perspektif ve hava perspektifini birlikte kullanır(G.İ.B) G.8.3.4 Kendisinin ve akranlarının çalışmalarını analiz eder. (S.E.E) G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. Çizimler; kuş bakışı, balıkgözü, solucan bakışı, karşıdan bakış farklı bakış acılarıyla oluşturur. (G.İ.B) TEKLİ KAÇIŞ","tat":false},{"h":14,"s":"2026-12-14","e":"2026-12-18","t":"BİR DERİNLİK HİKAYESİ ?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.8.1.6 Görsel sanat çalışmasında farklı perspektif (derinlik) tekniklerini kullanır. Mekânda derinlik etkisi oluşturmak için tek kaçarlı / iki kaçarlı ve üç kaçarlı perspektif ve hava perspektifini birlikte kullanır(G.İ.B) G.8.3.4 Kendisinin ve akranlarının çalışmalarını analiz eder. (S.E.E) G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. Çizimler; kuş bakışı, balıkgözü, solucan bakışı, karşıdan bakış farklı bakış acılarıyla oluşturur. (G.İ.B) TEKLİ KAÇIŞ","tat":false},{"h":15,"s":"2026-12-21","e":"2026-12-25","t":"BİR DERİNLİK HİKAYESİ ?","k":"Değişik çizim kalemleriyle ve cetvel yardımıyla perspektif çizimini yapar ve renkle derinlik oluşturur İKİLİ KAÇIŞ","z":"G.8.1.6 Görsel sanat çalışmasında farklı perspektif (derinlik) tekniklerini kullanır. Mekânda derinlik etkisi oluşturmak için tek kaçarlı / iki kaçarlı ve üç kaçarlı perspektif ve hava perspektifini birlikte kullanır(G.İ.B) G.8.3.4 Kendisinin ve akranlarının çalışmalarını analiz eder. (S.E.E) G.8.1.7 Gözleme dayalı çizimlerinde farklı bakış açılarını gösterir. Çizimler; kuş bakışı, balıkgözü, solucan bakışı, karşıdan bakış farklı bakış acılarıyla oluşturur. (G.İ.B) TEKLİ KAÇIŞ","tat":false},{"h":16,"s":"2026-12-28","e":"2027-01-01","t":"KENDİNE TARZIMI BULALIM","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.8.2.2 Sanatçıların toplumda üstlendiği rolleri bilir.Renk: zıtlık etkisi, Değer: Gölgeleme, Oran-orantı: Oran ilişkileri, Birlik: uyum, Çeşitlilik: Bir veya birkaç sanat elemanının uyumlu birlikteliği. (K.M)","tat":false},{"h":17,"s":"2027-01-04","e":"2027-01-08","t":"KENDİNE TARZIMI BULALIM","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.8.2.2 Sanatçıların toplumda üstlendiği rolleri bilir.Renk: zıtlık etkisi, Değer: Gölgeleme, Oran-orantı: Oran ilişkileri, Birlik: uyum, Çeşitlilik: Bir veya birkaç sanat elemanının uyumlu birlikteliği. (K.M)","tat":false},{"h":18,"s":"2027-01-11","e":"2027-01-15","t":"KENDİNE TARZIMI BULALIM","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.8.2.2 Sanatçıların toplumda üstlendiği rolleri bilir.Renk: zıtlık etkisi, Değer: Gölgeleme, Oran-orantı: Oran ilişkileri, Birlik: uyum, Çeşitlilik: Bir veya birkaç sanat elemanının uyumlu birlikteliği. (K.M)","tat":false},{"h":19,"s":"2027-01-18","e":"2027-01-22","t":"KENDİNE TARZIMI BULALIM","k":"Yaptığı Resim çalışmasında farklı teknikler, renk anlayışı, sanat üslubu kullanır ve uygular.(Soyut veya somut resim çalışmaları)","z":"G.8.2.2 Sanatçıların toplumda üstlendiği rolleri bilir.Renk: zıtlık etkisi, Değer: Gölgeleme, Oran-orantı: Oran ilişkileri, Birlik: uyum, Çeşitlilik: Bir veya birkaç sanat elemanının uyumlu birlikteliği. (K.M)","tat":false},{"h":20,"s":"2027-01-25","e":"2027-01-29","t":"25 Ocak 05 şubat YARIYIL TATİLİ (10 GÜN)","k":"","z":"25 Ocak 05 şubat YARIYIL TATİLİ (10 GÜN)","tat":true},{"h":21,"s":"2027-02-08","e":"2027-02-12","t":"BİR KAHRAMAN DOĞUYOR","k":"Tarihi olayların sanata etkisini bilerek serbest teknik ile bir kahramanlık hikâyesi resmi yapar.","z":"G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.3.5 Sanatın tanımlamasını ifade eder. Sanatın farklı zaman dilimlerindeki tanımlarının, türlerinin ve değişiminin tartışılması sağlanır. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.2.2 Sanatçının toplumda yüklendiği rolleri bilir. (K.M) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E)","tat":false},{"h":22,"s":"2027-02-15","e":"2027-02-19","t":"BİR KAHRAMAN DOĞUYOR","k":"Tarihi olayların sanata etkisini bilerek serbest teknik ile bir kahramanlık hikâyesi resmi yapar.","z":"G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.3.5 Sanatın tanımlamasını ifade eder. Sanatın farklı zaman dilimlerindeki tanımlarının, türlerinin ve değişiminin tartışılması sağlanır. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.2.2 Sanatçının toplumda yüklendiği rolleri bilir. (K.M) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E)","tat":false},{"h":23,"s":"2027-02-22","e":"2027-02-26","t":"BİR KAHRAMAN DOĞUYOR","k":"Tarihi olayların sanata etkisini bilerek serbest teknik ile bir kahramanlık hikâyesi resmi yapar.","z":"G.8.2.1 Sanat eserinin sosyal, politik ve ekonomik faktörlerden nasıl etkilendiğini tanımlar. (K.M) G.8.3.5 Sanatın tanımlamasını ifade eder. Sanatın farklı zaman dilimlerindeki tanımlarının, türlerinin ve değişiminin tartışılması sağlanır. (S.E.E) G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.2.2 Sanatçının toplumda yüklendiği rolleri bilir. (K.M) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder. (S.E.E)","tat":false},{"h":24,"s":"2027-03-01","e":"2027-03-05","t":"BİR SANATÇI TANIMAK","k":"Öğrencilerin sevdikleri güzel sanatlar alanıyla ilgili bir sanatçının tanıtılması ve tanınması","z":"G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder (S.E.E)","tat":false},{"h":25,"s":"2027-03-08","e":"2027-03-12","t":"08/12 Mart 2026 Ara Tatil (5 GÜN)","k":"","z":"08/12 Mart 2026 Ara Tatil (5 GÜN)","tat":true},{"h":26,"s":"2027-03-15","e":"2027-03-19","t":"BİR SANATÇI TANIMAK","k":"Öğrencilerin sevdikleri güzel sanatlar alanıyla ilgili bir sanatçının tanıtılması ve tanınması","z":"G.8.2.2 Sanatçını toplumda yüklendiği rolleri bilir. (K.M) G.8.3.5 Sanatın tanımlamasını ifade eder. Sanatın farklı zaman dilimlerindeki tanımlarının, türlerinin ve değişiminin tartışılması sağlanır. (S.E.E)","tat":false},{"h":27,"s":"2027-03-22","e":"2027-03-26","t":"BİR SANATÇI TANIMAK","k":"Öğrencilerin sevdikleri güzel sanatlar alanıyla ilgili bir sanatçının tanıtılması ve tanınması","z":"G.8.2.2 Sanatçını toplumda yüklendiği rolleri bilir. (K.M) G.8.3.5 Sanatın tanımlamasını ifade eder. Sanatın farklı zaman dilimlerindeki tanımlarının, türlerinin ve değişiminin tartışılması sağlanır. (S.E.E)","tat":false},{"h":28,"s":"2027-03-29","e":"2027-04-02","t":"ELEŞTİRMENİN KURALLLARI","k":"Sanatta ve hayatın içinde Dedikodu kültüründen uzak tamamen yapıcı ve kurallı estetik kültürünün sistematik eleştiri anlayışının ne olduğunu öğrenir.","z":"G.8.3.3 Sanatla ilişkili olarak estetiğin ne olduğunu ifade eder. (S.E.E) G.8.1.2 Görsel Sanat çalışması oluşturma kaynağı olarak bir süreç dosyası geliştirir.(G.İ.B)","tat":false},{"h":29,"s":"2027-04-05","e":"2027-04-09","t":"ELEŞTİRMENİN KURALLLARI","k":"Sanatta ve hayatın içinde Dedikodu kültüründen uzak tamamen yapıcı ve kurallı estetik kültürünün sistematik eleştiri anlayışının ne olduğunu öğrenir.","z":"G.8.1.1 Görsel Sanat çalışması oluşturma sürecini eskiz defterinde gösterir. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder.(S.E.E) G.8.3.6 Çağdaş medyadaki imaj, yazı ve sembol gibi unsurların etkisini analiz eder. (S.E.E)","tat":false},{"h":30,"s":"2027-04-12","e":"2027-04-16","t":"ELEŞTİRMENİN KURALLLARI","k":"Sanatta ve hayatın içinde Dedikodu kültüründen uzak tamamen yapıcı ve kurallı estetik kültürünün sistematik eleştiri anlayışının ne olduğunu öğrenir.","z":"G.8.1.1 Görsel Sanat çalışması oluşturma sürecini eskiz defterinde gösterir. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder.(S.E.E) G.8.3.6 Çağdaş medyadaki imaj, yazı ve sembol gibi unsurların etkisini analiz eder. (S.E.E)","tat":false},{"h":31,"s":"2027-04-19","e":"2027-04-23","t":"ELEŞTİRMENİN KURALLLARI","k":"Sanatta ve hayatın içinde Dedikodu kültüründen uzak tamamen yapıcı ve kurallı estetik kültürünün sistematik eleştiri anlayışının ne olduğunu öğrenir.","z":"G.8.1.1 Görsel Sanat çalışması oluşturma sürecini eskiz defterinde gösterir. (G.İ.B) G.8.3.1 Sanat eserlerindeki görsel dili düzenlemenin ifadeleri aktarmadaki etkisini analiz eder.(S.E.E) G.8.3.6 Çağdaş medyadaki imaj, yazı ve sembol gibi unsurların etkisini analiz eder. (S.E.E)","tat":false},{"h":32,"s":"2027-04-26","e":"2027-04-30","t":"BEN BİR GRAFİK TASARIMCIYIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.8.1.3 Görsel Sanat çalışmasını oluşturmak için güncel sanattan yararlanır. (G.İ.B) G.8.1.4. Yazı ve görsel kullanarak görsel sanat çalışması oluşturur. Güncel ve sosyal sorumluluk gerektiren konularla ilgili afiş veya karikatür çalışmasının özellikleri ve oluşturulma süreci üzerinde durulabilir. (G.İ.B)","tat":false},{"h":33,"s":"2027-05-03","e":"2027-05-07","t":"BEN BİR GRAFİK TASARIMCIYIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.8.1.3 Görsel Sanat çalışmasını oluşturmak için güncel sanattan yararlanır. (G.İ.B) G.8.1.4. Yazı ve görsel kullanarak görsel sanat çalışması oluşturur. Güncel ve sosyal sorumluluk gerektiren konularla ilgili afiş veya karikatür çalışmasının özellikleri ve oluşturulma süreci üzerinde durulabilir. (G.İ.B)","tat":false},{"h":34,"s":"2027-05-10","e":"2027-05-14","t":"BEN BİR GRAFİK TASARIMCIYIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.8.1.3 Görsel Sanat çalışmasını oluşturmak için güncel sanattan yararlanır. (G.İ.B) G.8.1.4. Yazı ve görsel kullanarak görsel sanat çalışması oluşturur. Güncel ve sosyal sorumluluk gerektiren konularla ilgili afiş veya karikatür çalışmasının özellikleri ve oluşturulma süreci üzerinde durulabilir. (G.İ.B)","tat":false},{"h":35,"s":"2027-05-17","e":"2027-05-21","t":"BEN BİR GRAFİK TASARIMCIYIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.8.1.3 Görsel Sanat çalışmasını oluşturmak için güncel sanattan yararlanır. (G.İ.B) G.8.1.4. Yazı ve görsel kullanarak görsel sanat çalışması oluşturur. Güncel ve sosyal sorumluluk gerektiren konularla ilgili afiş veya karikatür çalışmasının özellikleri ve oluşturulma süreci üzerinde durulabilir. (G.İ.B)","tat":false},{"h":36,"s":"2027-05-24","e":"2027-05-28","t":"BEN BİR GRAFİK TASARIMCIYIM","k":"Öğrencilerin Reklamın ve tanıtımın ne olduğunu araştırarak Grafik sanatlarda Afiş tasarımından örnekler inceleyerek seçtikleri bir konuyla ilgili Afiş Tasarımı yapmaları istenir.","z":"G.8.1.3 Görsel Sanat çalışmasını oluşturmak için güncel sanattan yararlanır. (G.İ.B) G.8.1.4. Yazı ve görsel kullanarak görsel sanat çalışması oluşturur. Güncel ve sosyal sorumluluk gerektiren konularla ilgili afiş veya karikatür çalışmasının özellikleri ve oluşturulma süreci üzerinde durulabilir. (G.İ.B)","tat":false},{"h":37,"s":"2027-05-31","e":"2027-06-04","t":"SANAT KORİDORU","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false},{"h":38,"s":"2027-06-07","e":"2027-06-11","t":"SANAT KORİDORU","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false},{"h":39,"s":"2027-06-14","e":"2027-06-18","t":"SANAT KORİDORU","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false},{"h":40,"s":"2027-06-21","e":"2027-06-25","t":"SANAT KORİDORU","k":"Çocuklarımızın yıl boyunca yaptıkları eserlerini sergileme fırsatı vermek ve onların mutluluğunu paylaşmak","z":"G.8.2.3 Dönem, üslup kullanılan malzemelere göre sanat eserlerinin özelliklerini karşılaştırır. (K.M) G.8.3.2 Bir sanat eserinin değerlendirilmesinde bilgi ve deneyimlerin etkinsi fark eder. (S.E.E)","tat":false}],"DS7":[{"h":1,"s":"2026-09-14","e":"2026-09-18","t":"OKUL TEMELLİ PLANLAMA","k":"Okul ve çevre ihtiyaçlarına yönelik planlanan sosyal, kültürel veya bilimsel etkinlikler.","z":"Zümre öğretmenler kurulu tarafından kararlaştırılan okul dışı öğrenme, yerel çalışmalar, sosyal etkinlikler veya proje çalışmaları.","tat":false},{"h":2,"s":"2026-09-21","e":"2026-09-25","t":"1. TEMA: DİJİTAL SANATLARI KEŞFEDİYORUM","k":"Dijital Sanatlara İlişkin Temel Kavram ve Özellikleri. Anahtar Kavramlar: dijital sanat, dijital sanat tarihi, dijital sanat türleri, estetik.","z":"DS.1.1.1. Dijital sanatlara ilişkin temel kavram ve özellikleri sorgulayabilme a) Dijital sanat ile ilgili merak ettiklerini tanımlar. b) Dijital sanat türleri ve estetik kavramı hakkında sorular sorar. c) Dijital sanat ürünlerinin tarihsel gelişimine ilişkin bilgi toplar. ç) Edindiği bilgilerin doğruluğunu değerlendirir. d) Dijital sanatın tarihsel gelişiminin estetik boyutuna etkisi hakkında çıkarım yapar.","tat":false},{"h":3,"s":"2026-09-28","e":"2026-10-02","t":"1. TEMA: DİJİTAL SANATLARI KEŞFEDİYORUM","k":"Dijital Sanat Ürünlerinde Estetik Ögeler. Anahtar Kavramlar: estetik, özgünlük, sanat elemanları.","z":"DS.1.1.2. Dijital sanat ürünlerinde estetik ögeleri yorumlayabilme a) Dijital sanat ürünlerinde yer alan görsel bileşenlerle eserin teması arasında ilişki kurar. b) Dijital sanat ürünlerinin estetik yönlerine ilişkin çıkarım yapar.","tat":false},{"h":4,"s":"2026-10-05","e":"2026-10-09","t":"1. TEMA: DİJİTAL SANATLARI KEŞFEDİYORUM","k":"Dijital Sanatların Üretiminde Kullanılan Bilişim Teknolojileri Araçları. Anahtar Kavramlar: dijital üretim araç ve teknolojileri, sanat ve bilişim ilişkisi.","z":"DS.1.1.3. Dijital sanat yaparken kullanılan bilişim teknolojilerini sınıflandırabilme a) Dijital sanat yaparken kullanılan bilişim teknolojilerini belirler. b) Dijital sanat yaparken kullanılan bilişim teknolojilerini kullanım amaçları ile ilişkilendirir. c) Dijital sanat yaparken kullanılan bilişim teknolojilerini işlevlerine göre gruplandırır.","tat":false},{"h":5,"s":"2026-10-12","e":"2026-10-16","t":"2. TEMA: DİJİTAL SANAT VE ETİK","k":"Dijital Ortamda Etik Davranış. Anahtar Kavramlar: etik, dijital ayak izi, dijital mahremiyet, dijital zorbalık, telif.","z":"DS.1.2.1. Dijital ortamdaki etik davranışlara ilişkin kavramları sorgulayabilme a) Dijital ortamda etik davranış ve özgünlükle ilgili merak ettiklerini tanımlar. b) Etik ilkelere uygun dijital içerikler hakkında sorular sorar. c) Etik ilkelere uygun dijital içeriklere nasıl erişeceğine ilişkin bilgi toplar. ç) Edindiği bilgilerin doğruluğunu değerlendirir. d) Etik davranışların dijital içerik üretimine etkisi hakkında çıkarım yapar.","tat":false},{"h":6,"s":"2026-10-19","e":"2026-10-23","t":"2. TEMA: DİJİTAL SANAT VE ETİK","k":"Dijital Görsellerde Sanatsal Özgünlük. Anahtar Kavramlar: özgünlük, telif, yapay zekâ.","z":"DS.1.2.2. Dijital görsellerde özgünlük ve kopya içerikleri sanatsal ögeler üzerinden karşılaştırabilme a) Dijital içeriklerde yer alan görsel bileşenlerdeki benzerlikleri belirler. b) Dijital içeriklerde yer alan görsel bileşenlerdeki farklılıkları belirler.","tat":false},{"h":7,"s":"2026-10-26","e":"2026-10-30","t":"3. TEMA: DİJİTAL TASARIM ELEMANLARI VE İLKELERİ","k":"Görsel Sanat Eserlerinde Temel Sanat Elemanları. Anahtar Kavramlar: renk, biçim, doku, kompozisyon, tasarım ilkeleri.","z":"DS.1.3.1. Görsel sanat eserlerinde temel sanat elemanlarını gözlemleyebilme a) Görsel sanat eserlerinde yer alan bileşenleri fark eder. b) Görsel sanat eserlerinde yer alan bileşenleri sözel olarak ifade eder.","tat":false},{"h":8,"s":"2026-11-02","e":"2026-11-06","t":"3. TEMA: DİJİTAL TASARIM ELEMANLARI VE İLKELERİ","k":"Görsel Düzenlemede Dijital Tasarım Araçları ve Yöntemleri. Anahtar Kavramlar: dijital araçlar, görsel tasarım.","z":"DS.1.3.2. Görsel düzenleme sürecinde dijital tasarım araç, teknoloji ve yöntemlerinden yararlanabilme a) Görsel düzenleme sürecinde kullanılan dijital araç, teknoloji ve yöntemleri tanır.","tat":false},{"h":9,"s":"2026-11-09","e":"2026-11-13","t":"3. TEMA: DİJİTAL TASARIM ELEMANLARI VE İLKELERİ","k":"Görsel Düzenlemede Dijital Tasarım Araçları ve Yöntemleri. Anahtar Kavramlar: dijital araçlar, kompozisyon.","z":"DS.1.3.2. Görsel düzenleme sürecinde dijital tasarım araç, teknoloji ve yöntemlerinden yararlanabilme b) Görsel düzenleme sürecine uygun araç, teknoloji ve yöntemleri belirler.","tat":false},{"h":10,"s":"2026-11-23","e":"2026-11-27","t":"3. TEMA: DİJİTAL TASARIM ELEMANLARI VE İLKELERİ","k":"Görsel Düzenlemede Dijital Tasarım Araçları ve Yöntemleri. Anahtar Kavramlar: görsel tasarım, kompozisyon, tasarım ilkeleri.","z":"DS.1.3.2. Görsel düzenleme sürecinde dijital tasarım araç, teknoloji ve yöntemlerinden yararlanabilme c) Görsel düzenleme yapmak için tasarım ilkelerine uygun belirlediği araç, teknoloji ve yöntemleri kullanır.","tat":false},{"h":11,"s":"2026-11-30","e":"2026-12-04","t":"3. TEMA: DİJİTAL TASARIM ELEMANLARI VE İLKELERİ","k":"Görsel Düzenlemede Dijital Tasarım Araçları ve Yöntemleri. Anahtar Kavramlar: görsel tasarım, değerlendirme.","z":"DS.1.3.2. Görsel düzenleme sürecinde dijital tasarım araç, teknoloji ve yöntemlerinden yararlanabilme ç) Görsel düzenlemede kullanılan araç, teknoloji ve yöntemleri değerlendirir.","tat":false},{"h":12,"s":"2026-12-07","e":"2026-12-11","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Görsel Çizim ve Düzenleme Araçları. Anahtar Kavramlar: dijital çizim, dijital sanat ürünü, teknolojik yaratıcılık.","z":"DS.1.4.1. Dijital görsel çizim ve düzenleme araçlarından yararlanabilme a) Dijital görsel oluşturma ve düzenleme sürecinde kullanılan dijital çizim araçlarını tanır. b) Dijital görsel oluşturma ve düzenleme sürecine uygun dijital çizim araçlarını belirler.","tat":false},{"h":13,"s":"2026-12-14","e":"2026-12-18","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Görsel Çizim ve Düzenleme Araçları. Anahtar Kavramlar: dijital çizim, estetik, özgünlük, telif hakkı.","z":"DS.1.4.1. Dijital görsel çizim ve düzenleme araçlarından yararlanabilme c) Dijital görsel oluşturma ve düzenleme için belirlenen çizim araçlarını kullanır.","tat":false},{"h":14,"s":"2026-12-21","e":"2026-12-25","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Görsel Çizim ve Düzenleme Araçları. Anahtar Kavramlar: estetik, değerlendirme.","z":"DS.1.4.1. Dijital görsel çizim ve düzenleme araçlarından yararlanabilme ç) Dijital görsel oluşturma ve düzenlemede kullanılan araç ve yöntemleri değerlendirir.","tat":false},{"h":15,"s":"2026-12-28","e":"2027-01-01","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Ses Kayıt ve Düzenleme Araçları. Anahtar Kavramlar: ses düzenleme, montaj, dijital sanat ürünü.","z":"DS.1.4.2. Dijital ses kayıt ve düzenleme araçlarından yararlanabilme a) Dijital ses dosyası oluşturma ve düzenleme sürecinde kullanılan araçları tanır. b) Dijital ses dosyası oluşturma ve düzenleme sürecine uygun araçları belirler.","tat":false},{"h":16,"s":"2027-01-04","e":"2027-01-08","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Ses Kayıt ve Düzenleme Araçları. Anahtar Kavramlar: ses düzenleme, montaj, telif hakkı.","z":"DS.1.4.2. Dijital ses kayıt ve düzenleme araçlarından yararlanabilme c) Dijital ses kaydı oluşturma ve düzenleme için belirlenen araçları kullanır.","tat":false},{"h":17,"s":"2027-01-11","e":"2027-01-15","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Ses Kayıt ve Düzenleme Araçları. Anahtar Kavramlar: ses düzenleme, etik, özgünlük.","z":"DS.1.4.2. Dijital ses kayıt ve düzenleme araçlarından yararlanabilme c) Dijital ses kaydı oluşturma ve düzenleme için belirlenen araçları kullanır.","tat":false},{"h":18,"s":"2027-01-18","e":"2027-01-22","t":"4. TEMA: DİJİTAL ÜRETİMDE ÇİZİM, GÖRÜNTÜ VE SES","k":"Dijital Ses Kayıt ve Düzenleme Araçları. Anahtar Kavramlar: ses düzenleme, telif hakkı, değerlendirme.","z":"DS.1.4.2. Dijital ses kayıt ve düzenleme araçlarından yararlanabilme ç) Dijital ses kaydında kullanılan araç ve yöntemleri teknik ve etik boyutlarıyla değerlendirir.","tat":false},{"h":19,"s":"2027-02-08","e":"2027-02-12","t":"OKUL TEMELLİ PLANLAMA","k":"Okul ve çevre ihtiyaçlarına yönelik planlanan sosyal, kültürel veya bilimsel etkinlikler.","z":"Zümre öğretmenler kurulu tarafından kararlaştırılan okul dışı öğrenme, yerel çalışmalar, sosyal etkinlikler veya proje çalışmaları.","tat":false},{"h":20,"s":"2027-02-15","e":"2027-02-19","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Yapay Zeka Araçlarının Sınıflandırılması ve Dijital İçerikte Kullanımı. Anahtar Kavramlar: yapay zeka, yapay zeka araçları, teknoloji-sanat etkileşimi.","z":"DS.1.5.1. Dijital içerik oluşturmada kullanılan yapay zekâ araçlarını sınıflandırabilme a) Dijital içerik oluşturmada kullanılan yapay zekâ araçlarını belirler. b) Dijital içerik oluşturmada kullanılan yapay zekâ araçlarını sanat alanları ile ilişkilendirir.","tat":false},{"h":21,"s":"2027-02-22","e":"2027-02-26","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Yapay Zeka Araçlarının Sınıflandırılması ve Dijital İçerikte Kullanımı. Anahtar Kavramlar: yapay zeka araçları, etik üretim, dijital mahremiyet.","z":"DS.1.5.1. Dijital içerik oluşturmada kullanılan yapay zekâ araçlarını sınıflandırabilme c) Dijital içerik oluşturmada kullanılan yapay zekâ araçlarını işlevlerine göre gruplandırır.","tat":false},{"h":22,"s":"2027-03-01","e":"2027-03-05","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Dijital İçeriklerde Mesaj ve Anlam. Anahtar Kavramlar: mesaj, insan katkısı, teknoloji-sanat etkileşimi.","z":"DS.1.5.2. Yapay zekâ ile oluşturulmuş dijital içeriklerdeki mesajı anlamlandırabilme a) Yapay zekâ ile oluşturulmuş dijital içeriklerdeki nesnel ve öznel mesajlarını belirler. b) Dijital içeriklerin üretim biçimi ile ilettiği mesajlar arasındaki ilişkileri tespit eder.","tat":false},{"h":23,"s":"2027-03-15","e":"2027-03-19","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Sanatsal Dijital İçerik Üretiminde Yapay Zekâ Araçları. Anahtar Kavramlar: içerik oluşturma, yapay zeka araçları.","z":"DS.1.5.3. Dijital içerik oluşturmada sanatsal yapay zekâ araçlarından yararlanabilme a) Dijital içerik oluşturma ve düzenlemede kullanılan yapay zekâ araçlarını tanır. b) Dijital içerik oluşturma ve düzenlemede kullanılan uygun araç ve yöntemleri belirler.","tat":false},{"h":24,"s":"2027-03-22","e":"2027-03-26","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Sanatsal Dijital İçerik Üretiminde Yapay Zekâ Araçları. Anahtar Kavramlar: etik üretim, dijital mahremiyet, özgünlük, insan katkısı.","z":"DS.1.5.3. Dijital içerik oluşturmada sanatsal yapay zekâ araçlarından yararlanabilme c) Dijital içerik oluşturma ve düzenlemede belirlediği yapay zekâ araç ve yöntemlerini etik ve güvenli kullanım ilkelerini gözeterek kullanır.","tat":false},{"h":25,"s":"2027-03-29","e":"2027-04-02","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Sanatsal Dijital İçerik Üretiminde Yapay Zekâ Araçları. Anahtar Kavramlar: etik üretim, dijital mahremiyet, özgünlük, insan katkısı.","z":"DS.1.5.3. Dijital içerik oluşturmada sanatsal yapay zekâ araçlarından yararlanabilme c) Dijital içerik oluşturma ve düzenlemede belirlediği yapay zekâ araç ve yöntemlerini etik ve güvenli kullanım ilkelerini gözeterek kullanır.","tat":false},{"h":26,"s":"2027-04-05","e":"2027-04-09","t":"5. TEMA: YAPAY ZEKÂ İLE DİJİTAL SANAT","k":"Sanatsal Dijital İçerik Üretiminde Yapay Zekâ Araçları. Anahtar Kavramlar: dijital estetik, özgünlük.","z":"DS.1.5.3. Dijital içerik oluşturmada sanatsal yapay zekâ araçlarından yararlanabilme ç) Dijital içerik oluşturmada kullandığı yapay zekâ araç ve yöntemleri değerlendirir.","tat":false},{"h":27,"s":"2027-04-12","e":"2027-04-16","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, modelleme.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme a) Üç boyutlu modelleme araçlarını tanır.","tat":false},{"h":28,"s":"2027-04-19","e":"2027-04-23","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, oran-orantı.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme a) Üç boyutlu modelleme araçlarını tanır.","tat":false},{"h":29,"s":"2027-04-26","e":"2027-04-30","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, modelleme.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme b) Üç boyutlu modelleme araçlarını belirler.","tat":false},{"h":30,"s":"2027-05-03","e":"2027-05-07","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: modelleme, oran-orantı.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme b) Üç boyutlu modelleme araçlarını belirler.","tat":false},{"h":31,"s":"2027-05-10","e":"2027-05-14","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, modelleme.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme c) Üç boyutlu modelleme araçlarını kullanır.","tat":false},{"h":32,"s":"2027-05-17","e":"2027-05-21","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, modelleme, oran-orantı.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme c) Üç boyutlu modelleme araçlarını kullanır.","tat":false},{"h":33,"s":"2027-05-24","e":"2027-05-28","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: modelleme.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme c) Üç boyutlu modelleme araçlarını kullanır.","tat":false},{"h":34,"s":"2027-05-31","e":"2027-06-04","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, oran-orantı.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme c) Üç boyutlu modelleme araçlarını kullanır.","tat":false},{"h":35,"s":"2027-06-07","e":"2027-06-11","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: 3B tasarım, modelleme.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme ç) Oluşturduğu üç boyutlu tasarımı görsel tasarım ilkeleri açısından değerlendirir.","tat":false},{"h":36,"s":"2027-06-14","e":"2027-06-18","t":"6. TEMA: ÜÇ BOYUTLU MODELLEME","k":"Dijital Tasarımda Üç Boyutlu Modelleme. Anahtar Kavramlar: oran-orantı, tasarım değerlendirme.","z":"DS.1.6.1. Dijital tasarım sürecinde üç boyutlu modelleme araçlarından yararlanabilme ç) Oluşturduğu üç boyutlu tasarımı görsel tasarım ilkeleri açısından değerlendirir.","tat":false},{"h":37,"s":"2027-06-21","e":"2027-06-25","t":"SENE SONU DEĞERLENDİRME","k":"SENE SONU DEĞERLENDİRME","z":"SENE SONU DEĞERLENDİRME","tat":false}]}; /* {GS7:[...], GS8:[...]} her biri {h,s,e,t,k,z,tat} */
+
+/* Sabahçı grup ders saatleri (23 Kasım 2026'dan itibaren geçerli yeni saatler) */
+var DEFAULT_PERIODS = [
+  {no:1,start:'07:50',end:'08:25'},
+  {no:2,start:'08:35',end:'09:10'},
+  {no:3,start:'09:20',end:'09:55'},
+  {no:4,start:'10:05',end:'10:40'},
+  {no:5,start:'10:50',end:'11:25'},
+  {no:6,start:'11:35',end:'12:10'},
+  {no:7,start:'12:20',end:'12:55'}
+];
+var PERIODS = DEFAULT_PERIODS.map(function(p){return {no:p.no,start:p.start,end:p.end};});
+function loadPeriods(){
+  try{
+    var s = loadStore();
+    if(s.periods && s.periods.length===7) return s.periods;
+  }catch(e){}
+  return DEFAULT_PERIODS.map(function(p){return {no:p.no,start:p.start,end:p.end};});
+}
+
+var DAYS = ['Pazartesi','Salı','Çarşamba','Perşembe','Cuma'];
+
+var SCHEDULE = {
+  'Pazartesi': {3:{c:'8/C',d:'GS'}, 5:{c:'7/A',d:'DS'}, 6:{c:'7/A',d:'GS'}, 7:{c:'8/B',d:'GS'}},
+  'Salı':      {3:{c:'8/E',d:'GS'}, 4:{c:'7/C',d:'DM'}, 5:{c:'7/B',d:'DS'}, 7:{c:'7/G',d:'DM'}},
+  'Çarşamba':  {3:{c:'8/H',d:'GS'}, 5:{c:'7/G',d:'GS'}, 7:{c:'7/B',d:'GS'}},
+  'Perşembe':  {1:{c:'7/D',d:'DS'}, 4:{c:'7/F',d:'DM'}, 6:{c:'7/E',d:'DM'}, 7:{c:'8/A',d:'GS'}},
+  'Cuma':      {2:{c:'7/E',d:'GS'}, 5:{c:'8/F',d:'GS'}, 6:{c:'8/D',d:'GS'}, 7:{c:'8/G',d:'GS'}}
+};
+
+var DERS_ADI = {GS:'Görsel Sanatlar', DS:'Dijital Sanatlar', DM:'Dijital ve Müzik'};
+var DERS_KISA = {GS:'Görsel San.', DS:'Dijital San.', DM:'Dij. ve Müzik'};
+
+var CLASSES_7 = ['7/A','7/B','7/C','7/D','7/E','7/F','7/G'];
+var CLASSES_8 = ['8/A','8/B','8/C','8/D','8/E','8/F','8/G','8/H'];
+
+var NOBET_GUNU = 'Perşembe';
+
+/* ============ YARDIMCI ============ */
+function pad(n){return n<10?'0'+n:''+n;}
+function todayISO(d){d=d||new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function gradeOf(cls){return cls[0];} // '7' or '8'
+
+function planFor(ders, cls){
+  var g = gradeOf(cls);
+  // "Dijital ve Müzik" saatlerinde sınıf ikiye bölünüyor; bu öğretmenin verdiği kısım
+  // içerik olarak Dijital Sanatlar dersinin ta kendisi, o yüzden aynı plana bakıyoruz.
+  var key = (ders==='GS') ? ('GS'+g) : ('DS'+g);
+  var extra = loadExtraPlan(key); // yönetici panelinden elle güncellenmiş olabilir, önceliği o alır
+  if(extra) return extra;
+  return PLAN[key] || null;
+}
+
+function findWeek(planArr, dateISO){
+  if(!planArr || !planArr.length) return {status:'none'};
+  if(dateISO < planArr[0].s) return {status:'before', next:planArr[0]};
+  var last = planArr[planArr.length-1];
+  if(dateISO > last.e) return {status:'after'};
+  for(var i=0;i<planArr.length;i++){
+    var w = planArr[i];
+    if(dateISO>=w.s && dateISO<=w.e){
+      return {status:'in', week:w, index:i};
+    }
+  }
+  // gap (tatil arası) -> find next upcoming week
+  for(var j=0;j<planArr.length;j++){
+    if(planArr[j].s > dateISO) return {status:'gap', next:planArr[j], index:j};
+  }
+  return {status:'after'};
+}
+
+function remainingInTheme(planArr, index){
+  var theme = planArr[index].t;
+  var count = 1, i = index+1;
+  while(i<planArr.length && planArr[i].t===theme){count++; i++;}
+  var doneInTheme = 1, j = index-1;
+  while(j>=0 && planArr[j].t===theme){doneInTheme++; j--;}
+  return {totalInTheme: doneInTheme + (count-1), posInTheme: doneInTheme, leftInTheme: count-1};
+}
+
+var DAY_NAMES_TR = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+var MONTHS_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+function fmtDateLong(iso){
+  var p = iso.split('-'); var d = new Date(p[0],p[1]-1,p[2]);
+  return d.getDate()+' '+MONTHS_TR[d.getMonth()]+' '+p[0];
+}
+function fmtDateShort(iso){
+  var p = iso.split('-');
+  return p[2]+'.'+p[1];
+}
+
+/* ============ STORAGE (öğrenci/yıldız/şifre/ekstra plan) ============ */
+var STORE_KEY = 'dersTakipData_v1';
+function loadStore(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {students:{}, stars:{}, pass:'1234', plans:{}}; }
+  catch(e){ return {students:{}, stars:{}, pass:'1234', plans:{}}; }
+}
+function saveStore(s){ localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+function loadExtraPlan(key){
+  var s = loadStore();
+  return s.plans && s.plans[key] ? s.plans[key] : null;
+}
+
+/* ============ CLOCK ============ */
+function tickClock(){
+  var now = new Date();
+  document.getElementById('clockTime').textContent = pad(now.getHours())+':'+pad(now.getMinutes());
+  document.getElementById('clockDate').textContent = DAY_NAMES_TR[now.getDay()]+' · '+fmtDateShort(todayISO(now));
+}
+setInterval(tickClock, 1000*20);
+
+/* ============ BUGÜN VIEW ============ */
+function currentDayName(){
+  var now = new Date();
+  var idx = now.getDay(); // 0 pazar
+  var map = {1:'Pazartesi',2:'Salı',3:'Çarşamba',4:'Perşembe',5:'Cuma'};
+  return map[idx] || null;
+}
+
+function timeToMinutes(t){var p=t.split(':');return (+p[0])*60+(+p[1]);}
+
+function getNowStatus(dayName){
+  var now = new Date();
+  var nowMin = now.getHours()*60+now.getMinutes();
+  var todaySched = SCHEDULE[dayName] || {};
+  for(var i=0;i<PERIODS.length;i++){
+    var p = PERIODS[i];
+    var s = timeToMinutes(p.start), e = timeToMinutes(p.end);
+    if(nowMin>=s && nowMin<=e){
+      var les = todaySched[p.no];
+      return {type: les? 'lesson':'free', period:p, lesson:les};
+    }
+  }
+  // boşta - bul sıradaki ders
+  for(var j=0;j<PERIODS.length;j++){
+    var p2 = PERIODS[j];
+    if(timeToMinutes(p2.start) > nowMin){
+      var les2 = todaySched[p2.no];
+      if(les2) return {type:'upcoming', period:p2, lesson:les2};
+    }
+  }
+  return {type:'done'};
+}
+
+function renderNowCard(){
+  var holder = document.getElementById('nowCardHolder');
+  var dayName = currentDayName();
+  if(!dayName){
+    holder.innerHTML = '<div class="now-card empty"><div class="eyebrow">Hafta Sonu</div><div class="big">Bugün ders yok</div><div class="sub">İyi tatiller.</div></div>';
+    return;
+  }
+  var st = getNowStatus(dayName);
+  var html = '';
+  if(st.type==='lesson'){
+    html = '<div class="now-card '+st.lesson.d.toLowerCase()+'">'
+      +'<div class="eyebrow">Şu an · '+st.period.start+'–'+st.period.end+'</div>'
+      +'<div class="big">'+st.lesson.c+'</div>'
+      +'<div class="sub">'+DERS_ADI[st.lesson.d]+'</div>'
+      +'<div class="tap" data-open="'+st.lesson.c+'|'+st.lesson.d+'">Konuyu Gör →</div>'
+      +'</div>';
+  } else if(st.type==='free'){
+    html = '<div class="now-card empty"><div class="eyebrow">Şu an · '+st.period.start+'–'+st.period.end+'</div><div class="big">Boş saat</div><div class="sub">Bu saatte dersin yok.</div></div>';
+  } else if(st.type==='upcoming'){
+    html = '<div class="now-card '+st.lesson.d.toLowerCase()+'">'
+      +'<div class="eyebrow">Sıradaki ders · '+st.period.start+'</div>'
+      +'<div class="big">'+st.lesson.c+'</div>'
+      +'<div class="sub">'+DERS_ADI[st.lesson.d]+'</div>'
+      +'<div class="tap" data-open="'+st.lesson.c+'|'+st.lesson.d+'">Konuyu Gör →</div>'
+      +'</div>';
+  } else {
+    html = '<div class="now-card empty"><div class="eyebrow">Bugün</div><div class="big">Dersler bitti</div><div class="sub">Yarın görüşürüz.</div></div>';
+  }
+  holder.innerHTML = html;
+}
+
+function renderTodayList(){
+  var dayName = currentDayName();
+  var listEl = document.getElementById('todayList');
+  var titleEl = document.getElementById('todayTitle');
+  if(!dayName){ listEl.innerHTML=''; titleEl.textContent='Bugünkü Program'; return; }
+  titleEl.textContent = dayName + ' Programı' + (dayName===NOBET_GUNU ? '  ·  Nöbet Günü' : '');
+  var sched = SCHEDULE[dayName] || {};
+  var nowMin = new Date().getHours()*60+new Date().getMinutes();
+  var html = '';
+  PERIODS.forEach(function(p){
+    var les = sched[p.no];
+    var isNow = nowMin>=timeToMinutes(p.start) && nowMin<=timeToMinutes(p.end);
+    if(les){
+      html += '<div class="period-row'+(isNow?' is-now':'')+'" data-open="'+les.c+'|'+les.d+'">'
+        +'<div class="pnum">'+p.start+'<b>'+p.no+'</b></div>'
+        +'<div class="dot '+les.d.toLowerCase()+'"></div>'
+        +'<div class="info"><div class="cls">'+les.c+'</div><div class="les">'+DERS_ADI[les.d]+'</div></div>'
+        +'<div class="chev">›</div>'
+        +'</div>';
+    } else {
+      html += '<div class="period-row empty">'
+        +'<div class="pnum">'+p.start+'<b>'+p.no+'</b></div>'
+        +'<div class="dot empty"></div>'
+        +'<div class="info">Boş saat</div>'
+        +'</div>';
+    }
+  });
+  listEl.innerHTML = html;
+}
+
+/* ============ HAFTA VIEW ============ */
+var activeDayTab = currentDayName() || 'Pazartesi';
+function renderWeekView(){
+  var tabsEl = document.getElementById('dayTabs');
+  tabsEl.innerHTML = DAYS.map(function(d){
+    return '<div class="day-tab'+(d===activeDayTab?' active':'')+'" data-day="'+d+'">'+d.slice(0,3)+'</div>';
+  }).join('');
+  tabsEl.querySelectorAll('.day-tab').forEach(function(el){
+    el.addEventListener('click', function(){ activeDayTab = el.getAttribute('data-day'); renderWeekView(); });
+  });
+  var listEl = document.getElementById('weekList');
+  var sched = SCHEDULE[activeDayTab] || {};
+  var html = '';
+  PERIODS.forEach(function(p){
+    var les = sched[p.no];
+    if(les){
+      html += '<div class="period-row" data-open="'+les.c+'|'+les.d+'">'
+        +'<div class="pnum">'+p.start+'<b>'+p.no+'</b></div>'
+        +'<div class="dot '+les.d.toLowerCase()+'"></div>'
+        +'<div class="info"><div class="cls">'+les.c+'</div><div class="les">'+DERS_ADI[les.d]+'</div></div>'
+        +'<div class="chev">›</div>'
+        +'</div>';
+    } else {
+      html += '<div class="period-row empty">'
+        +'<div class="pnum">'+p.start+'<b>'+p.no+'</b></div>'
+        +'<div class="dot empty"></div>'
+        +'<div class="info">Boş saat</div>'
+        +'</div>';
+    }
+  });
+  listEl.innerHTML = html;
+}
+
+/* ============ SINIFLAR VIEW ============ */
+// bir sınıfın bu öğretmenden aldığı TÜM dersleri bul (bazı sınıflar iki ders alıyor)
+function classDersList(cls){
+  var found = [];
+  for(var d in SCHEDULE){
+    for(var p in SCHEDULE[d]){
+      var les = SCHEDULE[d][p];
+      if(les.c===cls && found.indexOf(les.d)===-1) found.push(les.d);
+    }
+  }
+  return found.length ? found : ['GS'];
+}
+function classDers(cls){ return classDersList(cls)[0]; } // ilk (varsayılan) ders - detay bilgisi gerektirmeyen yerlerde
+function renderClassesView(){
+  var g7 = document.getElementById('grid7');
+  var g8 = document.getElementById('grid8');
+  function chipsFor(list){
+    var out = [];
+    list.forEach(function(c){
+      classDersList(c).forEach(function(d){
+        out.push('<div class="class-chip '+d.toLowerCase()+'" data-open="'+c+'|'+d+'">'+c+'<span class="l">'+DERS_KISA[d]+'</span></div>');
+      });
+    });
+    return out.join('');
+  }
+  g7.innerHTML = chipsFor(CLASSES_7);
+  g8.innerHTML = chipsFor(CLASSES_8);
+}
+
+/* ============ DETAY SHEET ============ */
+function openDetail(cls, ders){
+  document.getElementById('dtCls').textContent = cls;
+  document.getElementById('dtPill').innerHTML = '<span class="pill '+ders.toLowerCase()+'">'+DERS_ADI[ders]+'</span>';
+  var planArr = planFor(ders, cls);
+  var body = document.getElementById('dtBody');
+  var today = todayISO();
+
+  var res = findWeek(planArr, today);
+  var html = '';
+
+  if(!planArr){
+    html += '<div class="empty-note">Bu dersin yıllık planı henüz sisteme yüklenmedi. Yönetici panelinden ekleyebilirsin.</div>';
+  } else if(res.status==='before'){
+    html += '<div class="empty-note">Bu ders için yıllık plan henüz başlamadı. İlk hafta: '+fmtDateLong(res.next.s)+'</div>';
+  } else if(res.status==='after'){
+    html += '<div class="empty-note">Bu dersin yıllık planı tamamlandı. İyi tatiller!</div>';
+  } else {
+    var w = (res.status==='in') ? res.week : res.next;
+    var noteGap = (res.status==='gap');
+    if(w.tat || noteGap){
+      html += '<div class="empty-note">'+(w.tat? 'Bu hafta resmî tatil/bayram haftası.' : 'Şu an ara tatil dönemindesiniz.')+' Sıradaki konu '+fmtDateLong(w.s)+' haftasında: <b>'+w.t+'</b></div>';
+    }
+    if(!w.tat){
+      html += '<div class="block"><div class="lbl">Tema / Öğrenme Alanı</div><div class="val">'+w.t+'</div></div>';
+      if(w.k) html += '<div class="block"><div class="lbl">Konu</div><div class="val">'+w.k+'</div></div>';
+      html += '<div class="block"><div class="lbl">Kazanım</div><div class="val">'+w.z+'</div></div>';
+    }
+    if(res.status==='in'){
+      var rem = remainingInTheme(planArr, res.index);
+      var pct = Math.round((rem.posInTheme/rem.totalInTheme)*100);
+      html += '<div class="block"><div class="lbl">Hafta '+w.h+' / '+planArr.length+' · '+fmtDateLong(w.s)+' – '+fmtDateLong(w.e)+'</div>'
+        +'<div class="progress-wrap"><div class="progress-bar"><div style="width:'+pct+'%;background:var(--'+ders.toLowerCase()+')"></div></div>'
+        +'<div class="progress-txt">Bu temada '+rem.posInTheme+'. hafta ('+rem.totalInTheme+' haftalık tema) · '+(rem.leftInTheme>0? rem.leftInTheme+' hafta sonra tema değişecek' : 'Tema bu hafta bitiyor')+'</div></div></div>';
+    }
+  }
+
+  // yıldız öğrenci bilgisi
+  var store = loadStore();
+  var star = store.stars[cls];
+  if(star){
+    html += '<div class="block"><div class="lbl">Yıldız Öğrenci</div><div class="val">⭐ '+star+'</div></div>';
+  }
+
+  body.innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('show');
+}
+document.getElementById('dtClose').addEventListener('click', function(){
+  document.getElementById('detailOverlay').classList.remove('show');
+});
+document.getElementById('detailOverlay').addEventListener('click', function(e){
+  if(e.target.id==='detailOverlay') e.currentTarget.classList.remove('show');
+});
+document.body.addEventListener('click', function(e){
+  var op = e.target.closest && e.target.closest('[data-open]');
+  if(op){
+    var parts = op.getAttribute('data-open').split('|');
+    openDetail(parts[0], parts[1]);
+  }
+});
+
+/* ============ TAB / NAV NAVİGASYON ============ */
+function showView(name){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active', t.getAttribute('data-view')===name);});
+  document.querySelectorAll('nav.bottom button').forEach(function(b){b.classList.toggle('active', b.getAttribute('data-nav')===name);});
+  document.getElementById('adminScreen').style.display='none';
+  document.querySelector('header.top').style.display='';
+  document.querySelector('.tabs').style.display='';
+  if(name==='week') renderWeekView();
+  if(name==='classes') renderClassesView();
+}
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){ showView(t.getAttribute('data-view')); });
+});
+document.querySelectorAll('nav.bottom button').forEach(function(b){
+  b.addEventListener('click', function(){
+    var n = b.getAttribute('data-nav');
+    if(n==='admin'){ openAdmin(); } else { showView(n); }
+  });
+});
+
+/* ============ ADMIN ============ */
+function openAdmin(){
+  document.querySelector('header.top').style.display='none';
+  document.querySelector('.tabs').style.display='none';
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.getElementById('adminScreen').style.display='';
+  document.querySelectorAll('nav.bottom button').forEach(function(b){b.classList.toggle('active', b.getAttribute('data-nav')==='admin');});
+  var store = loadStore();
+  document.getElementById('loginBox').style.display = store._unlocked ? 'none' : '';
+  document.getElementById('adminPanel').style.display = store._unlocked ? '' : 'none';
+  if(store._unlocked) fillAdminPanel();
+}
+document.getElementById('backFromLogin').addEventListener('click', function(){ showView('today'); });
+document.getElementById('loginBtn').addEventListener('click', function(){
+  var store = loadStore();
+  var val = document.getElementById('adminPass').value;
+  if(val === (store.pass||'1234')){
+    store._unlocked = true; // sadece bu oturum belleğinde - kalıcı değil
+    window.__unlocked = true;
+    document.getElementById('loginBox').style.display='none';
+    document.getElementById('adminPanel').style.display='';
+    fillAdminPanel();
+  } else {
+    document.getElementById('loginErr').textContent = 'Şifre yanlış.';
+  }
+});
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  window.__unlocked = false;
+  showView('today');
+});
+
+function allClasses(){ return CLASSES_7.concat(CLASSES_8); }
+
+function fillAdminPanel(){
+  var sel = document.getElementById('adminClassSelect');
+  sel.innerHTML = allClasses().map(function(c){
+    var ders = classDersList(c).map(function(d){return DERS_ADI[d];}).join(' & ');
+    return '<option value="'+c+'">'+c+' — '+ders+'</option>';
+  }).join('');
+  loadStudentsForSelected();
+  sel.onchange = loadStudentsForSelected;
+  renderStarOverview();
+  renderPeriodEditor();
+}
+function loadStudentsForSelected(){
+  var cls = document.getElementById('adminClassSelect').value;
+  var store = loadStore();
+  document.getElementById('studentListArea').value = (store.students[cls]||[]).join('\n');
+  fillStarSelect(cls);
+}
+function fillStarSelect(cls){
+  var store = loadStore();
+  var names = store.students[cls]||[];
+  var sel = document.getElementById('starSelect');
+  if(!names.length){ sel.innerHTML = '<option value="">Önce öğrenci listesi ekle</option>'; return; }
+  var current = store.stars[cls];
+  sel.innerHTML = names.map(function(n){return '<option value="'+n+'"'+(n===current?' selected':'')+'>'+n+'</option>';}).join('');
+}
+document.getElementById('saveStudentsBtn').addEventListener('click', function(){
+  var cls = document.getElementById('adminClassSelect').value;
+  var names = document.getElementById('studentListArea').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  var store = loadStore();
+  store.students[cls] = names;
+  saveStore(store);
+  document.getElementById('studentsFlash').textContent = names.length+' öğrenci kaydedildi.';
+  setTimeout(function(){document.getElementById('studentsFlash').textContent='';}, 2500);
+  fillStarSelect(cls);
+});
+document.getElementById('saveStarBtn').addEventListener('click', function(){
+  var cls = document.getElementById('adminClassSelect').value;
+  var name = document.getElementById('starSelect').value;
+  if(!name) return;
+  var store = loadStore();
+  store.stars[cls] = name;
+  saveStore(store);
+  renderStarOverview();
+});
+function renderStarOverview(){
+  var store = loadStore();
+  var rows = Object.keys(store.stars).sort().map(function(c){
+    return '<div class="star-item"><span>'+c+'</span><span class="badge">⭐ '+store.stars[c]+'</span></div>';
+  }).join('');
+  document.getElementById('starOverview').innerHTML = rows || '<div class="hint">Henüz yıldız öğrenci seçilmedi.</div>';
+}
+document.getElementById('changePassBtn').addEventListener('click', function(){
+  var val = document.getElementById('newPass').value.trim();
+  if(!val){return;}
+  var store = loadStore();
+  store.pass = val;
+  saveStore(store);
+  document.getElementById('newPass').value='';
+  document.getElementById('passFlash').textContent = 'Şifre güncellendi.';
+  setTimeout(function(){document.getElementById('passFlash').textContent='';}, 2500);
+});
+document.getElementById('savePlanBtn').addEventListener('click', function(){
+  var key = document.getElementById('planCourseSelect').value;
+  var raw = document.getElementById('planImportArea').value.trim();
+  if(!raw){return;}
+  var lines = raw.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  var arr = lines.map(function(l){
+    var parts = l.split(';');
+    return {h:+parts[0], s:parts[1], e:parts[2], t:parts[3]||'', k:parts[4]||'', z:parts[5]||'', tat:false};
+  });
+  var store = loadStore();
+  store.plans = store.plans || {};
+  store.plans[key] = arr;
+  saveStore(store);
+  document.getElementById('planFlash').textContent = arr.length+' hafta kaydedildi.';
+  setTimeout(function(){document.getElementById('planFlash').textContent='';}, 2500);
+});
+document.getElementById('resetBtn').addEventListener('click', function(){
+  if(confirm('Tüm öğrenci listeleri, yıldız öğrenciler ve ek planlar silinecek. Onaylıyor musun?')){
+    localStorage.removeItem(STORE_KEY);
+    fillAdminPanel();
+  }
+});
+
+/* ============ DERS SAATLERİ DÜZENLEME ============ */
+function renderPeriodEditor(){
+  var el = document.getElementById('periodEditor');
+  el.innerHTML = PERIODS.map(function(p){
+    return '<div class="period-edit-row"><span class="lbl">'+p.no+'. Ders</span>'
+      +'<input type="time" id="pStart'+p.no+'" value="'+p.start+'">'
+      +'<span class="dash">–</span>'
+      +'<input type="time" id="pEnd'+p.no+'" value="'+p.end+'"></div>';
+  }).join('');
+}
+function flashPeriods(msg, ok){
+  var f = document.getElementById('periodsFlash');
+  f.style.color = ok ? 'var(--ds)' : 'var(--gs)';
+  f.textContent = msg;
+  setTimeout(function(){ f.textContent=''; }, 3000);
+}
+document.getElementById('savePeriodsBtn').addEventListener('click', function(){
+  var arr = [];
+  for(var i=1;i<=7;i++){
+    var s = document.getElementById('pStart'+i).value;
+    var e = document.getElementById('pEnd'+i).value;
+    if(!s || !e){ flashPeriods(i+'. dersin saatini boş bırakma.', false); return; }
+    if(timeToMinutes(s) >= timeToMinutes(e)){ flashPeriods(i+'. dersin bitişi başlangıçtan sonra olmalı.', false); return; }
+    arr.push({no:i,start:s,end:e});
+  }
+  var store = loadStore();
+  store.periods = arr;
+  saveStore(store);
+  PERIODS = arr;
+  renderNowCard(); renderTodayList();
+  flashPeriods('Saatler kaydedildi.', true);
+});
+document.getElementById('resetPeriodsBtn').addEventListener('click', function(){
+  var store = loadStore();
+  delete store.periods;
+  saveStore(store);
+  PERIODS = DEFAULT_PERIODS.map(function(p){return {no:p.no,start:p.start,end:p.end};});
+  renderPeriodEditor();
+  renderNowCard(); renderTodayList();
+  flashPeriods('Okulun güncel saatlerine dönüldü.', true);
+});
+
+/* ============ BAŞLAT ============ */
+PERIODS = loadPeriods();
+// _unlocked bayrağını her sayfa açılışında sıfırla (kalıcı olmasın)
+(function(){
+  var s = loadStore(); s._unlocked = false; saveStore(s);
+})();
+tickClock();
+renderNowCard();
+renderTodayList();
+setInterval(function(){ renderNowCard(); renderTodayList(); }, 1000*30);
+
+</script>
+</body>
+</html>
